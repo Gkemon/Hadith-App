@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Hadith-App</string>
+    <string name="loading_collection_error">Collection is not loading</string>
+    <string name="no_collection_available">No Collection available</string>
+</resources>

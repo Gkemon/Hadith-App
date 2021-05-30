@@ -1,0 +1,3 @@
+include ':core-features'
+include ':app'
+rootProject.name = "Hadith-App"
