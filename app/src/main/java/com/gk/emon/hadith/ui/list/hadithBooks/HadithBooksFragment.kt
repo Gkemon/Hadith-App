@@ -17,9 +17,7 @@ class HadithBooksFragment : BaseFragment() {
     }
 
     private lateinit var viewModel: HadithBooksViewModel
-    override fun layoutId(): Int {
-       return R.layout.fragment_collections
-    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {

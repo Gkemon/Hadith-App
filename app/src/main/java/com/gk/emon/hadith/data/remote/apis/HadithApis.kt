@@ -25,10 +25,13 @@ import retrofit2.http.Path
 internal interface HadithApis {
 
     companion object {
+        const val api_key_label = "X-API-Key"
+        const val api_key = "SqD712P3E82xnwOAEOkGd5JZH8s9wRR24TqNFzjk"
+        private const val v1 = "v1/"
+        const val baseURL = "https://api.sunnah.com/$v1"
         private const val collectionName = "collectionName"
         private const val hadithNumber = "hadithNumber"
         private const val bookNumber = "bookNumber"
-
     }
 
     @GET("collections")

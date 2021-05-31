@@ -1,15 +1,17 @@
 package com.gk.emon.hadith.ui.list.hadithCollections
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.gk.emon.core_features.extensions.Event
 import com.gk.emon.core_features.functional.Result
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.domain.GetHadithCollections
 import com.gk.emon.hadith.model.HadithCollection
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HadithCollectionsViewModel  @ViewModelInject constructor(
+@HiltViewModel
+class HadithCollectionsViewModel @Inject constructor(
     private val getHadithCollections: GetHadithCollections
 ) : ViewModel() {
 
@@ -34,11 +36,24 @@ class HadithCollectionsViewModel  @ViewModelInject constructor(
     // Not used at the moment
     private val isDataLoadingError = MutableLiveData<Boolean>()
 
+
+    private val _openHadithCollectionEvent = MutableLiveData<Event<HadithCollection>>()
+    val openHadithCollectionEvent: LiveData<Event<HadithCollection>> = _openHadithCollectionEvent
+
+
     init {
         loadCollections(true)
     }
 
-    private fun loadCollections(forceUpdate: Boolean) {
+    /**
+     * Called by Data Binding.
+     */
+    fun openHadithCollection(hadithCollection: HadithCollection) {
+        _openHadithCollectionEvent.value = Event(hadithCollection)
+    }
+
+
+    fun loadCollections(forceUpdate: Boolean) {
         _dataLoading.value = true
 
             viewModelScope.launch {

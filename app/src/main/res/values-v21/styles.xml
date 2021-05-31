@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BaseCardStyle">
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>`
+        <item name="android:background">@drawable/shape_rectangle_all_side_curve_shadow</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="android:layout_marginLeft">@dimen/_12sdp</item>
+        <item name="android:layout_marginTop">@dimen/_5sdp</item>
+        <item name="android:layout_marginRight">@dimen/_12sdp</item>
+        <item name="android:layout_marginBottom">@dimen/_5sdp</item>
+        <item name="cardCornerRadius">@dimen/_6sdp</item>
+        <item name="android:backgroundTint">@color/colorPrimary</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+</resources>

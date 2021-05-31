@@ -3,9 +3,10 @@ package com.gk.emon.hadith.domain
 import com.gk.emon.hadith.data.repository.HadithRepositoryNavigation
 import com.gk.emon.hadith.model.HadithCollection
 import  com.gk.emon.core_features.functional.Result
+import javax.inject.Inject
 
 
-class GetHadithCollections(private val hadithRepositoryNavigation: HadithRepositoryNavigation) {
+class GetHadithCollections @Inject constructor(private val hadithRepositoryNavigation: HadithRepositoryNavigation) {
     suspend operator fun invoke(
         forceUpdate: Boolean = false
     ): Result<List<HadithCollection>> {

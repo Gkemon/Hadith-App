@@ -14,14 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment : Fragment() {
 
-    abstract fun layoutId(): Int
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        inflater.inflate(layoutId(), container, false)
 
     open fun onBackPressed() {}
 

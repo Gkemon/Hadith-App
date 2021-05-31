@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import javax.inject.Inject
 
-class HistoryRepository @Inject constructor(
+class HadithRepository @Inject constructor(
     private val hadithDataSourceRemote: HadithDataSource,
     private val hadithDataSourceLocal: HadithDataSource,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
