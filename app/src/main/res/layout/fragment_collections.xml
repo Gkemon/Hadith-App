@@ -17,13 +17,14 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/tv_empty"
             style="@style/TitleTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/no_collection_available"
-            android:visibility="@{viewModel.empty?View.VISIBLE:View.GONE}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/rv_medicine_list"
             app:layout_constraintEnd_toEndOf="@+id/rv_medicine_list"
             app:layout_constraintStart_toStartOf="@+id/rv_medicine_list"

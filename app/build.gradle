@@ -51,6 +51,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     testImplementation 'junit:junit:4.13.2'
     implementation project(":core-features")
+    implementation project(":easy-loading")
+
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
     //Hilt
@@ -96,4 +98,5 @@ dependencies {
     //Dynamic text size
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
 }

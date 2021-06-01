@@ -40,11 +40,6 @@ class HadithCollectionsViewModel @Inject constructor(
     private val _openHadithCollectionEvent = MutableLiveData<Event<HadithCollection>>()
     val openHadithCollectionEvent: LiveData<Event<HadithCollection>> = _openHadithCollectionEvent
 
-
-    init {
-        loadCollections(true)
-    }
-
     /**
      * Called by Data Binding.
      */

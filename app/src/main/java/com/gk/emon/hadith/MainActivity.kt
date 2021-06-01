@@ -12,7 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.gk.emon.core_features.base_framework_ui.BaseActivity
 import com.gk.emon.hadith.data.local.HadithPreference
 import com.gk.emon.hadith.data.remote.apis.HadithApis
-import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment
+import com.gk.emon.lovelyLoading.LoadingPopup
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -27,19 +27,30 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        hadithPreference.setString(HadithApis.api_key_label, HadithApis.api_key)
         setupNavigationDrawer()
         setSupportActionBar(findViewById(R.id.toolbar))
-        hadithPreference.setString(HadithApis.api_key_label, HadithApis.api_key)
+        setupNavigation()
+        setupLoading()
+    }
 
+    private fun setupNavigation() {
         val navController: NavController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration =
             AppBarConfiguration.Builder(R.id.fragment_books, R.id.fragment_collection)
                 .setDrawerLayout(drawerLayout)
                 .build()
-
         setupActionBarWithNavController(navController, appBarConfiguration)
         findViewById<NavigationView>(R.id.nav_view)
             .setupWithNavController(navController)
+    }
+
+    //A singleton global configuration for loading UI which will be helpful to reduce boilerplate
+    //loading pop related code
+    private fun setupLoading() {
+        LoadingPopup.getInstance(this)
+            .defaultLovelyLoading()
+            .build()
     }
 
     override fun getViewContainer(): View {
