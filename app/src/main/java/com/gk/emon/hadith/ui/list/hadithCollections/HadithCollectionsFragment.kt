@@ -28,27 +28,25 @@ class HadithCollectionsFragment : BaseFragment() {
     ): View? {
         viewDataBinding = FragmentCollectionsBinding.inflate(inflater, container, false).apply {
             viewModel = hadithCollectionsViewModel
+            lifecycleOwner = this@HadithCollectionsFragment.viewLifecycleOwner
         }
         setHasOptionsMenu(true)
         return viewDataBinding.root
     }
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         setupListAdapter()
         hadithCollectionsViewModel.loadCollections(true)
     }
-
 
     private fun setupListAdapter() {
         val viewModel = viewDataBinding.viewModel
         if (viewModel != null) {
             hadithCollectionAdapter = HadithCollectionAdapter(R.layout.item_hadith_collections)
             viewDataBinding.rvMedicineList.adapter = hadithCollectionAdapter
-        } else {
-            Timber.w("ViewModel not initialized when attempting to set up adapter.")
         }
     }
 

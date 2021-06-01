@@ -15,18 +15,23 @@
  */
 package com.gk.emon.hadith.di
 
+import android.content.Context
+import androidx.room.Room
 import com.gk.emon.hadith.BuildConfig
 import com.gk.emon.hadith.data.HadithDataSource
 import com.gk.emon.hadith.data.local.HadithRoomDataSource
 import com.gk.emon.hadith.data.local.HadithRoomDatabase
+import com.gk.emon.hadith.data.network.NetworkHandler
 import com.gk.emon.hadith.data.remote.HadithRemoteDataSource
 import com.gk.emon.hadith.data.remote.TokenInterceptor
 import com.gk.emon.hadith.data.remote.apis.HadithApis
+import com.gk.emon.hadith.data.remote.apis.HadithService
 import com.gk.emon.hadith.data.repository.HadithRepository
 import com.gk.emon.hadith.data.repository.HadithRepositoryNavigation
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -81,8 +86,12 @@ class ApplicationModule {
     @Singleton
     @RemoteDataSource
     @Provides
-    fun provideRemoteDataSource(): HadithDataSource {
-        return HadithRemoteDataSource()
+    fun provideRemoteDataSource(
+        networkHandler: NetworkHandler,
+        service: HadithService
+    ): HadithDataSource {
+        return HadithRemoteDataSource(networkHandler, service)
+
     }
 
     @Singleton
@@ -92,27 +101,25 @@ class ApplicationModule {
         database: HadithRoomDatabase,
         ioDispatcher: CoroutineDispatcher
     ): HadithDataSource {
-        return HadithRemoteDataSource()
+        return HadithRoomDataSource(database.hadithDao(), ioDispatcher)
     }
-
 
     @Singleton
     @Provides
-    fun provideRemoteDataSource(
-        remoteDataSource: HadithDataSource,
-        localDataSource: HadithDataSource,
-        ioDispatcher: CoroutineDispatcher
-    ): HadithRepositoryNavigation {
-        return HadithRepository(
-            remoteDataSource, localDataSource, ioDispatcher
-        )
+    fun provideDataBase(@ApplicationContext context: Context): HadithRoomDatabase {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            HadithRoomDatabase::class.java,
+            "HadithRoomDataBase.db"
+        ).build()
     }
+
 
     @Singleton
     @Provides
     fun provideHadithRepository(
-        remoteDataSource: HadithDataSource,
-        localDataSource: HadithDataSource,
+        @RemoteDataSource remoteDataSource: HadithDataSource,
+        @LocalDataSource localDataSource: HadithDataSource,
         ioDispatcher: CoroutineDispatcher
     ): HadithRepositoryNavigation {
         return HadithRepository(

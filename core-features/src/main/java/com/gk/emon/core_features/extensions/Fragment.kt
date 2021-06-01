@@ -9,7 +9,7 @@ import com.gk.emon.core_features.base_framework_ui.BaseFragment
 
 fun BaseFragment.close() = fragmentManager?.popBackStack()
 
-val BaseFragment.viewContainer: View get() = (activity as BaseActivity).binding.fragmentContainer
+val BaseFragment.viewContainer: View get() = (activity as BaseActivity).getViewContainer()
 
 val BaseFragment.appContext: Context get() = activity?.applicationContext!!
 

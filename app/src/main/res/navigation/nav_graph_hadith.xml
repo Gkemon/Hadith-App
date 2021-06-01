@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_collection">
+    <fragment
+        android:id="@+id/fragment_collection"
+        android:name="com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment"
+        android:label="@string/app_name">
+        <action
+            android:id="@+id/action_collections_to_books"
+            app:destination="@id/fragment_books" />
+        <argument
+            android:name="userMessage"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_books"
+        android:name="com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksFragment"
+        android:label="{title}">
+        <argument
+            android:name="taskId"
+            app:argType="string"
+            app:nullable="true" />
+       <!-- <action
+            android:id="@+id/action_books_to_hadiths"
+            app:destination="@id/fragment_hadith_list" />-->
+    </fragment>
+<!--    <fragment
+        android:id="@+id/fragment_hadith_list"
+        android:name="com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksFragment"
+        android:label="{title}">
+        <argument
+            android:name="taskId"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_hadith_to_detail"
+            app:destination="@id/fragment_hadith_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_hadith_detail"
+        android:name="com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment"
+        android:label="@string/app_name" />
+    <argument
+        android:name="userMessage"
+        android:defaultValue="0" />-->
+</navigation>

@@ -1,17 +1,49 @@
 package com.gk.emon.hadith.data.remote
 
 import com.gk.emon.core_features.functional.Result
+import com.gk.emon.hadith.data.network.NetworkHandler
 import com.gk.emon.hadith.data.HadithDataSource
-import com.gk.emon.hadith.data.local.HadithDao
+import com.gk.emon.hadith.data.remote.apis.HadithService
 import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
 import com.gk.emon.hadith.model.HadithCollection
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import retrofit2.Call
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class HadithRemoteDataSource : HadithDataSource {
+@Singleton
+class HadithRemoteDataSource @Inject constructor(
+    private val networkHandler: NetworkHandler,
+    private val service: HadithService
+) : HadithDataSource {
+
+
+    private fun <T, R> request(
+        call: Call<T>,
+        transform: (T) -> R,
+        default: R
+    ): Result<R> {
+        return try {
+            val response = call.execute()
+            when (response.isSuccessful) {
+                true -> Result.Success(response.body()?.let { transform(it) } ?: default)
+                false -> Result.Error(Exception("Server response is not successful"))
+            }
+        } catch (exception: Throwable) {
+            Result.Error(Exception(exception))
+        }
+    }
+
+
     override suspend fun getHadithCollections(): Result<List<HadithCollection>> {
-        TODO("Not yet implemented")
+        return when (networkHandler.isNetworkAvailable()) {
+            true -> request(
+                service.collections(),
+                { it.data },
+                emptyList()
+            )
+            false -> Result.Error(Exception("No network found"))
+        }
     }
 
     override suspend fun getHadithBooks(collectionName: String): Result<List<HadithBook>> {

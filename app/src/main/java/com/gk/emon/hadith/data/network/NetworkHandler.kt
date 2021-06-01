@@ -1,4 +1,4 @@
-package com.gk.emon.core_features.network
+package com.gk.emon.hadith.data.network
 
 import android.content.Context
 import android.net.NetworkCapabilities

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "hadithCollection")
 data class HadithCollection(
-    val collection: List<CollectionMeta>,
+    val collection: List<HadithCollectionMeta>,
     val hasBooks: Boolean,
     val hasChapters: Boolean,
     @PrimaryKey val name: String,

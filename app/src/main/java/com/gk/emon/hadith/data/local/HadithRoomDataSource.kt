@@ -5,8 +5,14 @@ import com.gk.emon.hadith.data.HadithDataSource
 import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
 import com.gk.emon.hadith.model.HadithCollection
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class HadithRoomDataSource :HadithDataSource {
+class HadithRoomDataSource @Inject constructor(
+    private val hadithDao: HadithDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : HadithDataSource {
     override suspend fun getHadithCollections(): Result<List<HadithCollection>> {
         TODO("Not yet implemented")
     }
