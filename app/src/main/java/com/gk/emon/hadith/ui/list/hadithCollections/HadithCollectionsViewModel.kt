@@ -16,7 +16,7 @@ class HadithCollectionsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _items = MutableLiveData<List<HadithCollection>>().apply { value = emptyList() }
-    val items: LiveData<List<HadithCollection>> = _items
+    val collections: LiveData<List<HadithCollection>> = _items
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading

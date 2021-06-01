@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentCollectionsBinding
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HadithCollectionsFragment : BaseFragment() {
@@ -47,7 +48,12 @@ class HadithCollectionsFragment : BaseFragment() {
         if (viewModel != null) {
             hadithCollectionAdapter = HadithCollectionAdapter(R.layout.item_hadith_collections)
             viewDataBinding.rvMedicineList.adapter = hadithCollectionAdapter
+            hadithCollectionsViewModel.collections.observe(this.viewLifecycleOwner, Observer {
+                hadithCollectionAdapter.setList(it)
+            })
         }
+
+
     }
 
 }

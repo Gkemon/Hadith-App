@@ -11,4 +11,15 @@ data class HadithCollection(
     @PrimaryKey val name: String,
     val totalAvailableHadith: Int,
     val totalHadith: Int
-)
+) {
+    fun getProperCollectionEnglishName(): String {
+        return if (collection.isNotEmpty()) {
+            collection[0].title
+        } else name
+    }
+    fun getProperCollectionArabicName(): String {
+        return if (collection.isNotEmpty() && collection.size > 1) {
+            collection[1].title
+        } else name
+    }
+}

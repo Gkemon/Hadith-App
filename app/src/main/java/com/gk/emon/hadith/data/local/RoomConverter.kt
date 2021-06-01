@@ -7,7 +7,7 @@ import com.gk.emon.hadith.model.HadithMeta
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-object RoomConverter {
+class RoomConverter {
 
     //Hadith meta start
     @TypeConverter

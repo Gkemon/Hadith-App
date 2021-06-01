@@ -19,6 +19,7 @@ import android.content.Context
 import androidx.room.Room
 import com.gk.emon.hadith.BuildConfig
 import com.gk.emon.hadith.data.HadithDataSource
+import com.gk.emon.hadith.data.local.HadithPreference
 import com.gk.emon.hadith.data.local.HadithRoomDataSource
 import com.gk.emon.hadith.data.local.HadithRoomDatabase
 import com.gk.emon.hadith.data.network.NetworkHandler
@@ -44,7 +45,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApplicationModule {
+object ApplicationModule {
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
@@ -61,15 +62,15 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(hadithPreference: HadithPreference): Retrofit {
         return Retrofit.Builder()
             .baseUrl(HadithApis.baseURL)
-            .client(createClient())
+            .client(createClient(hadithPreference))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    private fun createClient(): OkHttpClient {
+    private fun createClient(hadithPreference: HadithPreference): OkHttpClient {
         val okHttpClientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
             val loggingInterceptor =
@@ -78,7 +79,7 @@ class ApplicationModule {
                 }
             okHttpClientBuilder
                 .addInterceptor(loggingInterceptor)
-                .addInterceptor(TokenInterceptor())
+                .addInterceptor(TokenInterceptor(hadithPreference))
         }
         return okHttpClientBuilder.build()
     }
@@ -91,7 +92,6 @@ class ApplicationModule {
         service: HadithService
     ): HadithDataSource {
         return HadithRemoteDataSource(networkHandler, service)
-
     }
 
     @Singleton
@@ -126,6 +126,5 @@ class ApplicationModule {
             remoteDataSource, localDataSource, ioDispatcher
         )
     }
-
 
 }

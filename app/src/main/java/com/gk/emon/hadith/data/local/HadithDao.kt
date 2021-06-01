@@ -1,15 +1,17 @@
 package com.gk.emon.hadith.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import com.gk.emon.hadith.model.HadithCollection
 
 
 @Dao
 interface HadithDao {
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun  saveCollections(hadithCollections: List<HadithCollection>)
 
  /*   @Query("SELECT * FROM Tasks")
     fun observeTasks(): LiveData<List<Task>>

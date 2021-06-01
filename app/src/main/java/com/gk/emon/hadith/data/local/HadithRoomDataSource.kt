@@ -30,7 +30,7 @@ class HadithRoomDataSource @Inject constructor(
     }
 
     override suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>) {
-        TODO("Not yet implemented")
+        hadithDao.saveCollections(hadithCollections)
     }
 
     override suspend fun saveHadithCollection(hadithCollection: HadithCollection) {
