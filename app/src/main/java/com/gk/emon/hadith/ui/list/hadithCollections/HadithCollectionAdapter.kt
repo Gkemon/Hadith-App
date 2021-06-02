@@ -9,9 +9,17 @@ import com.gk.emon.hadith.model.HadithCollection
 /**
  * Created by Gk Emon on 10/9/2020.
  */
-class HadithCollectionAdapter(@LayoutRes layoutResId: Int)
-                      : BaseQuickAdapter<HadithCollection, BaseDataBindingHolder<ItemHadithCollectionsBinding>>(layoutResId) {
-    override fun convert(holder: BaseDataBindingHolder<ItemHadithCollectionsBinding>, item: HadithCollection) {
+class HadithCollectionAdapter(
+    @LayoutRes layoutResId: Int,
+    val viewModel: HadithCollectionsViewModel
+) : BaseQuickAdapter<HadithCollection, BaseDataBindingHolder<ItemHadithCollectionsBinding>>(
+    layoutResId
+) {
+    override fun convert(
+        holder: BaseDataBindingHolder<ItemHadithCollectionsBinding>,
+        item: HadithCollection
+    ) {
         holder.dataBinding?.hadithCollection = item
+        holder.dataBinding?.viewModel = viewModel
     }
 }

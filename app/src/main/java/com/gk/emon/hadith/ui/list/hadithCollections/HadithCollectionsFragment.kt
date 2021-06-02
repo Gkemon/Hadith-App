@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
+import com.gk.emon.core_features.extensions.EventObserver
 import com.gk.emon.core_features.extensions.invisible
 import com.gk.emon.core_features.extensions.visible
 import com.gk.emon.hadith.R
@@ -17,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HadithCollectionsFragment : BaseFragment() {
-    private val hadithCollectionsViewModel: HadithCollectionsViewModel by viewModels()
+    private val viewModelHadithCollections: HadithCollectionsViewModel by viewModels()
     private lateinit var hadithCollectionAdapter: HadithCollectionAdapter
     private lateinit var viewDataBinding: FragmentCollectionsBinding
 
@@ -31,7 +32,7 @@ class HadithCollectionsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewDataBinding = FragmentCollectionsBinding.inflate(inflater, container, false).apply {
-            viewModel = hadithCollectionsViewModel
+            viewModel = viewModelHadithCollections
             lifecycleOwner = this@HadithCollectionsFragment.viewLifecycleOwner
         }
         setHasOptionsMenu(true)
@@ -41,14 +42,14 @@ class HadithCollectionsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         setupListAdapter()
         setupLoading()
-        hadithCollectionsViewModel.loadCollections(true)
+        setupNavigation()
+        viewModelHadithCollections.loadCollections(true)
     }
 
     private fun setupLoading() {
-        hadithCollectionsViewModel.dataLoading.observe(this.viewLifecycleOwner, Observer {
+        viewModelHadithCollections.dataLoading.observe(this.viewLifecycleOwner, Observer {
             if (it) {
                 viewDataBinding.tvEmpty.invisible()
                 activity?.let { activity -> LoadingPopup.showLoadingPopUp(activity) }
@@ -59,12 +60,18 @@ class HadithCollectionsFragment : BaseFragment() {
         })
     }
 
+    private fun setupNavigation() {
+        viewModelHadithCollections.openHadithCollectionEvent.observe(this.viewLifecycleOwner, EventObserver {
+            val action = HadithCollectionsFragmentDirections.actionCollectionsToBooks(it.name,it.getProperCollectionEnglishName())
+            findNavController().navigate(action)
+        })
+    }
     private fun setupListAdapter() {
         val viewModel = viewDataBinding.viewModel
         if (viewModel != null) {
-            hadithCollectionAdapter = HadithCollectionAdapter(R.layout.item_hadith_collections)
+            hadithCollectionAdapter = HadithCollectionAdapter(R.layout.item_hadith_collections,viewModel)
             viewDataBinding.rvMedicineList.adapter = hadithCollectionAdapter
-            hadithCollectionsViewModel.collections.observe(this.viewLifecycleOwner, Observer {
+            viewModelHadithCollections.collections.observe(this.viewLifecycleOwner, Observer {
                 if(it.isEmpty())viewDataBinding.tvEmpty.visible()
                 else viewDataBinding.tvEmpty.invisible()
                 hadithCollectionAdapter.setList(it)

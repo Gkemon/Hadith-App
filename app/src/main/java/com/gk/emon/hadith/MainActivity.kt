@@ -37,7 +37,7 @@ class MainActivity : BaseActivity() {
     private fun setupNavigation() {
         val navController: NavController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration =
-            AppBarConfiguration.Builder(R.id.fragment_books, R.id.fragment_collection)
+            AppBarConfiguration.Builder(R.id.fragment_books, R.id.collection_fragment_dest)
                 .setDrawerLayout(drawerLayout)
                 .build()
         setupActionBarWithNavController(navController, appBarConfiguration)
