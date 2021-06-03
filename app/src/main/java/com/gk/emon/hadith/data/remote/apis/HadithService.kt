@@ -2,6 +2,7 @@ package com.gk.emon.hadith.data.remote.apis
 
 import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
+import com.gk.emon.hadith.model.HadithBooksResponse
 import com.gk.emon.hadith.model.HadithCollectionResponse
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -15,7 +16,7 @@ class HadithService
 
     override fun collections(): Call<HadithCollectionResponse> = hadithApis.collections()
 
-    override fun books(collectionNameValue: String): Call<HadithBook> =
+    override fun books(collectionNameValue: String): Call<HadithBooksResponse> =
         hadithApis.books(collectionNameValue)
 
     override fun hadith(collectionNameValue: String, hadithNumberValue: String): Call<Hadith> =

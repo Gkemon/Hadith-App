@@ -8,7 +8,7 @@
         <import type="androidx.core.content.ContextCompat" />
         <variable
             name="viewModel"
-            type="com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsViewModel" />
+            type="com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,20 +17,21 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/tv_empty"
             style="@style/TitleTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/no_collection_available"
+            android:text="@string/no_hadith_available"
             android:visibility="@{viewModel.empty?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_medicine_list"
-            app:layout_constraintEnd_toEndOf="@+id/rv_medicine_list"
-            app:layout_constraintStart_toStartOf="@+id/rv_medicine_list"
-            app:layout_constraintTop_toTopOf="@+id/rv_medicine_list"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_books_list"
+            app:layout_constraintEnd_toEndOf="@+id/rv_books_list"
+            app:layout_constraintStart_toStartOf="@+id/rv_books_list"
+            app:layout_constraintTop_toTopOf="@+id/rv_books_list"
             tools:visibility="visible" />
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_medicine_list"
+            android:id="@+id/rv_books_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

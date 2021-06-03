@@ -8,9 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
-import com.gk.emon.core_features.extensions.EventObserver
-import com.gk.emon.core_features.extensions.invisible
-import com.gk.emon.core_features.extensions.visible
+import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentCollectionsBinding
 import com.gk.emon.lovelyLoading.LoadingPopup
@@ -52,10 +50,10 @@ class HadithCollectionsFragment : BaseFragment() {
         viewModelHadithCollections.dataLoading.observe(this.viewLifecycleOwner, Observer {
             if (it) {
                 viewDataBinding.tvEmpty.invisible()
-                activity?.let { activity -> LoadingPopup.showLoadingPopUp(activity) }
+                showLoadingPopup(activity)
             }
             else {
-                activity?.let { activity -> LoadingPopup.hideLoadingPopUp(activity) }
+                hideLoadingPopup(activity)
             }
         })
     }

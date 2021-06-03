@@ -7,6 +7,7 @@ import com.gk.emon.hadith.model.HadithBook
 import com.gk.emon.hadith.model.HadithCollection
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HadithRoomDataSource @Inject constructor(
@@ -29,17 +30,19 @@ class HadithRoomDataSource @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>) {
-        hadithDao.saveCollections(hadithCollections)
-    }
+    override suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>) =
+        withContext(ioDispatcher) {
+            hadithDao.saveCollections(hadithCollections)
+        }
 
     override suspend fun saveHadithCollection(hadithCollection: HadithCollection) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveHadithBooks(hadithBooks: List<HadithBook>) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun saveHadithBooks(hadithBooks: List<HadithBook>) =
+        withContext(ioDispatcher) {
+            hadithDao.saveBooks(hadithBooks)
+        }
 
     override suspend fun saveHadithBook(hadithBook: HadithBook) {
         TODO("Not yet implemented")

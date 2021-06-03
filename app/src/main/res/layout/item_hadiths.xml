@@ -8,12 +8,12 @@
         <import type="com.gk.emon.hadith.model.HadithCollection" />
 
         <variable
-            name="hadithBook"
-            type="com.gk.emon.hadith.model.HadithBook" />
+            name="hadith"
+            type="com.gk.emon.hadith.model.Hadith" />
 
         <variable
             name="viewModel"
-            type="com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksViewModel" />
+            type="com.gk.emon.hadith.ui.list.hadiths.HadithsViewModel" />
 
     </data>
 
@@ -27,15 +27,15 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:onClick="@{(view) -> viewModel.openHadithBook(hadithBook)}"
+                android:onClick="@{(view) -> viewModel.openHadith(hadith)}"
                 android:id="@+id/tv_collection_name"
                 style="@style/TitleTextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:text="@{hadithBook.properHadithBookNameEnglish}"
-                android:textSize="@dimen/_10ssp"
+                android:text="@{hadith.properBodyHadithEnglish}"
+                android:textSize="@dimen/_20ssp"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,8 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:text="@{hadithBook.properHadithBookNameArabic}"
-                android:textSize="@dimen/_8ssp"
+                android:text="@{hadith.properBodyHadithEnglish}"
+                android:textSize="@dimen/_15ssp"
                 android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

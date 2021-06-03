@@ -10,4 +10,15 @@ data class HadithBook(
     val hadithEndNumber: Int,
     val hadithStartNumber: Int,
     val numberOfHadith: Int
-)
+){
+    fun getProperHadithBookNameEnglish(): String {
+        return if (book.isNotEmpty()) {
+            book[0].name
+        } else ""
+    }
+    fun getProperHadithBookNameArabic(): String {
+        return if (book.isNotEmpty()) {
+            book[1].name
+        } else ""
+    }
+}

@@ -18,6 +18,8 @@ class HadithRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : HadithRepositoryNavigation {
     private var cachedCollections: ConcurrentMap<String, HadithCollection>? = null
+    private var cachedBooks: ConcurrentMap<String, HadithBook>? = null
+
 
     override suspend fun getHadithCollections(forceUpdate: Boolean): Result<List<HadithCollection>> {
 
@@ -52,6 +54,10 @@ class HadithRepository @Inject constructor(
         hadithDataSourceLocal.saveHadithCollections(collections)
     }
 
+    private suspend fun refreshLocalHadithBooks(collections: List<HadithBook>) {
+        hadithDataSourceLocal.saveHadithBooks(collections)
+    }
+
     private fun cacheHadithCollection(pendingCacheHadithCollection: HadithCollection): HadithCollection {
         // Create if it doesn't exist.
         if (cachedCollections == null) {
@@ -59,6 +65,15 @@ class HadithRepository @Inject constructor(
         }
         cachedCollections?.put(pendingCacheHadithCollection.name, pendingCacheHadithCollection)
         return pendingCacheHadithCollection
+    }
+
+    private fun cacheHadithBooks(pendingCacheHadithBook: HadithBook): HadithBook {
+        // Create if it doesn't exist.
+        if (cachedBooks == null) {
+            cachedBooks = ConcurrentHashMap()
+        }
+        cachedBooks?.put(pendingCacheHadithBook.bookNumber, pendingCacheHadithBook)
+        return pendingCacheHadithBook
     }
 
     private suspend fun fetchHadithCollectionsFromRemoteOrLocal(forceUpdate: Boolean): Result<List<HadithCollection>> {
@@ -83,16 +98,76 @@ class HadithRepository @Inject constructor(
         return Result.Error(Exception("Error fetching from remote and local"))
     }
 
+    private suspend fun fetchBooksFromRemoteOrLocal(
+        forceUpdate: Boolean,
+        collectionName: String
+    ): Result<List<HadithBook>> {
+        // Remote first
+        when (val remoteBooks = hadithDataSourceRemote.getHadithBooks(collectionName)) {
+            is Error -> return Result.Error((remoteBooks as Result.Error).failure)
+            is Result.Success -> {
+                refreshLocalHadithBooks(remoteBooks.data)
+                return remoteBooks
+            }
+        }
 
-    override suspend fun getHadithBooks(collectionName: String): Result<List<HadithBook>> {
+
+        // Don't read from local if it's forced
+        if (forceUpdate) {
+            return Result.Error(Exception("Can't force refresh: remote data source is unavailable"))
+        }
+
+        // Local if remote fails
+        val localBooks = hadithDataSourceLocal.getHadithBooks(collectionName)
+        if (localBooks is Result.Success) return localBooks
+        return Result.Error(Exception("Error fetching from remote and local"))
+    }
+
+
+    override suspend fun getHadithBooks(
+        forceUpdate: Boolean,
+        collectionName: String
+    ): Result<List<HadithBook>> {
+        return withContext(ioDispatcher) {
+            //First check that if it is persisted in memory (ram)
+            if (!forceUpdate) {
+                cachedBooks?.let { cachedBooks ->
+                    return@withContext Result.Success(cachedBooks.values.sortedBy { it.bookNumber })
+                }
+            }
+
+            val hadithBooks = fetchBooksFromRemoteOrLocal(forceUpdate, collectionName)
+            // Refresh the cache with the hadith collections
+            (hadithBooks as? Result.Success)?.data?.forEach { cacheHadithBooks(it) }
+
+            //Soring
+            cachedBooks?.values?.let { tasks ->
+                return@withContext Result.Success(tasks.sortedBy { it.bookNumber })
+            }
+
+            (hadithBooks as? Result.Success)?.let {
+                if (it.data.isEmpty()) {
+                    return@withContext Result.Success(it.data)
+                }
+            }
+
+            return@withContext Result.Error(Exception("No hadith collection found"))
+        }
+    }
+
+    override suspend fun getHadiths(
+        forceUpdate: Boolean,
+        collectionName: String,
+        bookNumber: String
+    ): Result<List<Hadith>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getHadiths(collectionName: String, bookId: Int): Result<List<Hadith>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getHadith(collectionName: String, hadithNumber: Int): Result<Hadith> {
+    override suspend fun getHadith(
+        forceUpdate: Boolean,
+        collectionName: String,
+        hadithNumber: Int
+    ): Result<Hadith> {
         TODO("Not yet implemented")
     }
 }

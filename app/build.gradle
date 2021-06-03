@@ -52,7 +52,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     testImplementation 'junit:junit:4.13.2'
     implementation project(":core-features")
-    implementation project(":easy-loading")
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 

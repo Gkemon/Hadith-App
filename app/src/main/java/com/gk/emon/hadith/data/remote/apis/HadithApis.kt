@@ -17,6 +17,7 @@ package com.gk.emon.hadith.data.remote.apis
 
 import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
+import com.gk.emon.hadith.model.HadithBooksResponse
 import com.gk.emon.hadith.model.HadithCollectionResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -38,7 +39,7 @@ internal interface HadithApis {
     fun collections(): Call<HadithCollectionResponse>
 
     @GET("collections/{$collectionName}/books")
-    fun books(@Path(collectionName) collectionNameValue: String): Call<HadithBook>
+    fun books(@Path(collectionName) collectionNameValue: String): Call<HadithBooksResponse>
 
 
     @GET("collections/{$collectionName}/hadiths/{${hadithNumber}}")
