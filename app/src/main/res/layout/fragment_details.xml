@@ -33,6 +33,7 @@
             <TextView
                 style="@style/TitleTextViewStyle"
                 android:layout_width="match_parent"
+                android:textSize="@dimen/_10sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@{viewModel.hadith.properBodyHadithEnglish}"
@@ -41,6 +42,7 @@
 
             <TextView
                 style="@style/TitleTextViewStyle"
+                android:textSize="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
