@@ -19,6 +19,7 @@ class HadithRepository @Inject constructor(
 ) : HadithRepositoryNavigation {
     private var cachedCollections: ConcurrentMap<String, HadithCollection>? = null
     private var cachedBooks: ConcurrentMap<String, HadithBook>? = null
+    private var cachedHadiths: ConcurrentMap<String, Hadith>? = null
 
 
     override suspend fun getHadithCollections(forceUpdate: Boolean): Result<List<HadithCollection>> {
@@ -54,8 +55,12 @@ class HadithRepository @Inject constructor(
         hadithDataSourceLocal.saveHadithCollections(collections)
     }
 
-    private suspend fun refreshLocalHadithBooks(collections: List<HadithBook>) {
-        hadithDataSourceLocal.saveHadithBooks(collections)
+    private suspend fun refreshLocalHadithBooks(hadithBooks: List<HadithBook>) {
+        hadithDataSourceLocal.saveHadithBooks(hadithBooks)
+    }
+
+    private suspend fun refreshLocalHadiths(hadiths: List<Hadith>) {
+        hadithDataSourceLocal.saveHadiths(hadiths)
     }
 
     private fun cacheHadithCollection(pendingCacheHadithCollection: HadithCollection): HadithCollection {
@@ -75,6 +80,16 @@ class HadithRepository @Inject constructor(
         cachedBooks?.put(pendingCacheHadithBook.bookNumber, pendingCacheHadithBook)
         return pendingCacheHadithBook
     }
+
+    private fun cacheHadiths(pendingCacheHadith: Hadith): Hadith {
+        // Create if it doesn't exist.
+        if (cachedHadiths == null) {
+            cachedHadiths = ConcurrentHashMap()
+        }
+        cachedHadiths?.put(pendingCacheHadith.hadithNumber, pendingCacheHadith)
+        return pendingCacheHadith
+    }
+
 
     private suspend fun fetchHadithCollectionsFromRemoteOrLocal(forceUpdate: Boolean): Result<List<HadithCollection>> {
         // Remote first
@@ -123,6 +138,33 @@ class HadithRepository @Inject constructor(
         return Result.Error(Exception("Error fetching from remote and local"))
     }
 
+    private suspend fun fetchHadithsFromRemoteOrLocal(
+        forceUpdate: Boolean,
+        collectionName: String,
+        bookNumber: String
+    ): Result<List<Hadith>> {
+        // Remote first
+        when (val remoteHadiths =
+            hadithDataSourceRemote.getHadiths(collectionName, bookNumber)) {
+            is Error -> return Result.Error((remoteHadiths as Result.Error).failure)
+            is Result.Success -> {
+                refreshLocalHadiths(remoteHadiths.data)
+                return remoteHadiths
+            }
+        }
+
+
+        // Don't read from local if it's forced
+        if (forceUpdate) {
+            return Result.Error(Exception("Can't force refresh: remote data source is unavailable"))
+        }
+
+        // Local if remote fails
+        val localHadiths = hadithDataSourceLocal.getHadiths(collectionName, bookNumber)
+        if (localHadiths is Result.Success) return localHadiths
+        return Result.Error(Exception("Error fetching from remote and local"))
+    }
+
 
     override suspend fun getHadithBooks(
         forceUpdate: Boolean,
@@ -141,8 +183,8 @@ class HadithRepository @Inject constructor(
             (hadithBooks as? Result.Success)?.data?.forEach { cacheHadithBooks(it) }
 
             //Soring
-            cachedBooks?.values?.let { tasks ->
-                return@withContext Result.Success(tasks.sortedBy { it.bookNumber })
+            cachedBooks?.values?.let { books ->
+                return@withContext Result.Success(books.sortedBy { it.bookNumber })
             }
 
             (hadithBooks as? Result.Success)?.let {
@@ -160,7 +202,30 @@ class HadithRepository @Inject constructor(
         collectionName: String,
         bookNumber: String
     ): Result<List<Hadith>> {
-        TODO("Not yet implemented")
+        return withContext(ioDispatcher) {
+            //First check that if it is persisted in memory (ram)
+            if (!forceUpdate) {
+                cachedHadiths?.let { cachedHadiths ->
+                    return@withContext Result.Success(cachedHadiths.values.sortedBy { it.hadithNumber })
+                }
+            }
+
+            val hadiths = fetchHadithsFromRemoteOrLocal(forceUpdate, collectionName, bookNumber)
+            // Refresh the cache with the hadith collections
+            (hadiths as? Result.Success)?.data?.forEach { cacheHadiths(it) }
+
+            //Soring
+            cachedHadiths?.values?.let { hadiths ->
+                return@withContext Result.Success(hadiths.sortedBy { it.bookNumber })
+            }
+
+            (hadiths as? Result.Success)?.let {
+                if (it.data.isEmpty()) {
+                    return@withContext Result.Success(it.data)
+                }
+            }
+            return@withContext Result.Error(Exception("No hadith found"))
+        }
     }
 
     override suspend fun getHadith(

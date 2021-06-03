@@ -57,8 +57,18 @@ class HadithRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getHadiths(collectionName: String, bookId: Int): Result<List<Hadith>> {
-        TODO("Not yet implemented")
+    override suspend fun getHadiths(
+        collectionName: String,
+        bookNumber: String
+    ): Result<List<Hadith>> {
+        return when (networkHandler.isNetworkAvailable()) {
+            true -> request(
+                service.hadithsOfBook(collectionName, bookNumber,10,1),
+                { it.data },
+                emptyList()
+            )
+            false -> Result.Error(Exception("No network found"))
+        }
     }
 
     override suspend fun getHadith(collectionName: String, hadithNumber: Int): Result<Hadith> {

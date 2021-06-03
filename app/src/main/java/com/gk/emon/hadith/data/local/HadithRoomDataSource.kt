@@ -22,7 +22,7 @@ class HadithRoomDataSource @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getHadiths(collectionName: String, bookId: Int): Result<List<Hadith>> {
+    override suspend fun getHadiths(collectionName: String, bookNumber: String): Result<List<Hadith>> {
         TODO("Not yet implemented")
     }
 
@@ -48,9 +48,10 @@ class HadithRoomDataSource @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveHadiths(hadiths: List<Hadith>) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun saveHadiths(hadiths: List<Hadith>) =
+        withContext(ioDispatcher) {
+            hadithDao.saveHadiths(hadiths)
+        }
 
     override suspend fun saveHadith(hadith: Hadith) {
         TODO("Not yet implemented")

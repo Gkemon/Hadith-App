@@ -66,9 +66,9 @@ class HadithBooksFragment : BaseFragment() {
         viewModelHadithBooks.openHadithBookEvent.observe(this.viewLifecycleOwner, EventObserver {
             findNavController().navigate(
                 HadithBooksFragmentDirections.actionBooksToHadiths(
-                    "",
-                    "",
-                    ""
+                    args.collectionName,
+                    it.bookNumber,
+                    it.getProperHadithBookNameEnglish()
                 )
             )
         })

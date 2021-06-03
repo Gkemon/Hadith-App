@@ -15,13 +15,11 @@
  */
 package com.gk.emon.hadith.data.remote.apis
 
-import com.gk.emon.hadith.model.Hadith
-import com.gk.emon.hadith.model.HadithBook
-import com.gk.emon.hadith.model.HadithBooksResponse
-import com.gk.emon.hadith.model.HadithCollectionResponse
+import com.gk.emon.hadith.model.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 internal interface HadithApis {
 
@@ -42,17 +40,18 @@ internal interface HadithApis {
     fun books(@Path(collectionName) collectionNameValue: String): Call<HadithBooksResponse>
 
 
-    @GET("collections/{$collectionName}/hadiths/{${hadithNumber}}")
+    @GET("collections/{$collectionName}/hadiths/{$hadithNumber}")
     fun hadith(
         @Path(collectionName) collectionNameValue: String,
         @Path(hadithNumber) hadithNumberValue: String
     ): Call<Hadith>
 
-    @GET("collections/{$collectionName}/books/{${bookNumber}}/hadiths")
+    @GET("collections/{$collectionName}/books/{$bookNumber}/hadiths")
     fun hadithsOfBook(
         @Path(collectionName) collectionNameValue: String,
-        @Path(bookNumber) bookNumberValue: String
-    ): Call<Hadith>
+        @Path(bookNumber) bookNumberValue: String,
+        @Query("limit") limit: Int, @Query("page") page: Int
+    ): Call<HadithListResponse>
 
 
 }

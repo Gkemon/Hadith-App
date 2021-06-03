@@ -3,6 +3,7 @@ package com.gk.emon.hadith.data.local
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
 import com.gk.emon.hadith.model.HadithCollection
 
@@ -16,6 +17,9 @@ interface HadithDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveBooks(hadithBook: List<HadithBook>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveHadiths(hadiths: List<Hadith>)
 
     /*   @Query("SELECT * FROM Tasks")
        fun observeTasks(): LiveData<List<Task>>

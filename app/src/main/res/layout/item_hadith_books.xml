@@ -23,11 +23,11 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:onClick="@{(view) -> viewModel.openHadithBook(hadithBook)}"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
-                android:onClick="@{(view) -> viewModel.openHadithBook(hadithBook)}"
                 android:id="@+id/tv_collection_name"
                 style="@style/TitleTextViewStyle"
                 android:layout_width="wrap_content"

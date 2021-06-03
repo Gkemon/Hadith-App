@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentHadithsBinding
+import com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,6 +19,7 @@ class HadithsFragment : BaseFragment() {
     private val viewModelHadiths: HadithsViewModel by viewModels()
     private lateinit var hadithsAdapter: HadithsAdapter
     private lateinit var viewDataBinding: FragmentHadithsBinding
+    private val args: HadithsFragmentArgs by navArgs()
 
     companion object {
         fun newInstance() =
@@ -41,7 +44,7 @@ class HadithsFragment : BaseFragment() {
         setupListAdapter()
         setupLoading()
         setupNavigation()
-        viewModelHadiths.loadHadiths(true, "", "")
+        viewModelHadiths.loadHadiths(true, args.collectionName, args.bookNumber)
     }
 
     private fun setupLoading() {
@@ -65,7 +68,7 @@ class HadithsFragment : BaseFragment() {
     private fun setupListAdapter() {
         val viewModel = viewDataBinding.viewModel
         if (viewModel != null) {
-            hadithsAdapter = HadithsAdapter(R.layout.item_hadith_books, viewModel)
+            hadithsAdapter = HadithsAdapter(R.layout.item_hadiths, viewModel)
             viewDataBinding.rvMedicineList.adapter = hadithsAdapter
             viewModelHadiths.hadiths.observe(this.viewLifecycleOwner, Observer {
                 if (it.isEmpty()) viewDataBinding.tvEmpty.visible()
