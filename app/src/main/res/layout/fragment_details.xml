@@ -12,44 +12,51 @@
             type="com.gk.emon.hadith.ui.details.HadithDetailsViewModel" />
     </data>
 
-    <LinearLayout
-        android:id="@+id/main"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <TextView
-            style="@style/TitleTextViewStyle"
+        <LinearLayout
+            android:id="@+id/main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="English"
-            android:textAlignment="center"></TextView>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            style="@style/TitleTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="@{viewModel.hadith.properBodyHadithEnglish}"
-            android:textAlignment="center"
-            android:textColor="@color/colorSuccessGreen"></TextView>
+            <TextView
+                style="@style/TitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="English"
+                android:textAlignment="center"></TextView>
 
-        <TextView
-            style="@style/TitleTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="Arabic"
-            android:textAlignment="center"></TextView>
+            <TextView
+                style="@style/TitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{viewModel.hadith.properBodyHadithEnglish}"
+                android:textAlignment="center"
+                android:textColor="@color/colorSuccessGreen"></TextView>
 
-        <TextView
-            style="@style/TitleTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="@{viewModel.hadith.properBodyHadithArabic}"
-            android:textAlignment="center"
-            android:textColor="@color/colorSuccessGreen"></TextView>
-    </LinearLayout>
+            <TextView
+                style="@style/TitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Arabic"
+                android:textAlignment="center"></TextView>
+
+            <TextView
+                style="@style/TitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{viewModel.hadith.properBodyHadithArabic}"
+                android:textAlignment="center"
+                android:textColor="@color/colorSuccessGreen"></TextView>
+        </LinearLayout>
+
+    </ScrollView>
+
 </layout>
