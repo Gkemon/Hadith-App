@@ -51,7 +51,7 @@
 
     <fragment
         android:id="@+id/fragment_hadith_detail"
-        android:name="com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment"
+        android:name="com.gk.emon.hadith.ui.details.HadithsDetailsFragment"
         android:label="@string/app_name">
         <argument
             android:name="hadithNumber"

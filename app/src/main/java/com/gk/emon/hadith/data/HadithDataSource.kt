@@ -9,7 +9,7 @@ interface HadithDataSource {
     suspend fun getHadithCollections(): Result<List<HadithCollection>>
     suspend fun getHadithBooks(collectionName: String): Result<List<HadithBook>>
     suspend fun getHadiths(collectionName: String, bookNumber: String): Result<List<Hadith>>
-    suspend fun getHadith(collectionName: String, hadithNumber: Int): Result<Hadith>
+    suspend fun getHadith(collectionName: String, hadithNumber: String): Result<Hadith>
 
     suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>)
     suspend fun saveHadithCollection(hadithCollection: HadithCollection)

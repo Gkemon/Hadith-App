@@ -9,5 +9,5 @@ interface HadithRepositoryNavigation {
     suspend fun getHadithCollections(forceUpdate: Boolean): Result<List<HadithCollection>>
     suspend fun getHadithBooks(forceUpdate: Boolean,collectionName: String): Result<List<HadithBook>>
     suspend fun getHadiths(forceUpdate: Boolean,collectionName: String, bookNumber: String): Result<List<Hadith>>
-    suspend fun getHadith(forceUpdate: Boolean,collectionName: String, hadithNumber: Int): Result<Hadith>
+    suspend fun getHadith(forceUpdate: Boolean,collectionName: String, hadithNumber: String): Result<Hadith>
 }

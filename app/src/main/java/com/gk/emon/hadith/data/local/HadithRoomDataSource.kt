@@ -14,21 +14,31 @@ class HadithRoomDataSource @Inject constructor(
     private val hadithDao: HadithDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : HadithDataSource {
-    override suspend fun getHadithCollections(): Result<List<HadithCollection>> {
+    override suspend fun getHadithCollections(): Result<List<HadithCollection>> =
+        withContext(ioDispatcher) {
+            Result.Success(hadithDao.getCollections())
+        }
+
+
+    override suspend fun getHadithBooks(collectionName: String): Result<List<HadithBook>> =
+        withContext(ioDispatcher) {
+            Result.Success(hadithDao.getBooks(collectionName))
+        }
+
+
+    override suspend fun getHadiths(
+        collectionName: String,
+        bookNumber: String
+    ): Result<List<Hadith>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getHadithBooks(collectionName: String): Result<List<HadithBook>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getHadith(collectionName: String, hadithNumber: String): Result<Hadith> =
+        withContext(ioDispatcher) {
+            Result.Success(hadithDao.getHadith(collectionName))
+        }
 
-    override suspend fun getHadiths(collectionName: String, bookNumber: String): Result<List<Hadith>> {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun getHadith(collectionName: String, hadithNumber: Int): Result<Hadith> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>) =
         withContext(ioDispatcher) {
@@ -53,7 +63,8 @@ class HadithRoomDataSource @Inject constructor(
             hadithDao.saveHadiths(hadiths)
         }
 
-    override suspend fun saveHadith(hadith: Hadith) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun saveHadith(hadith: Hadith) =
+        withContext(ioDispatcher) {
+            hadithDao.saveHadith(hadith)
+        }
 }

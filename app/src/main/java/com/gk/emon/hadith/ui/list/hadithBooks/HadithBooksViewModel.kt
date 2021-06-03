@@ -2,6 +2,7 @@ package com.gk.emon.hadith.ui.list.hadithBooks
 
 import androidx.lifecycle.*
 import com.gk.emon.core_features.extensions.Event
+import com.gk.emon.core_features.extensions.EventObserver
 import com.gk.emon.core_features.functional.Result
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.domain.GetHadithBooks
@@ -49,7 +50,7 @@ class HadithBooksViewModel @Inject constructor(
 
 
     fun loadBooks(forceUpdate: Boolean,collectionName:String) {
-        _dataLoading.value = true
+        _dataLoading.value =true
 
         viewModelScope.launch {
             val collectionResult = getHadithBooks(forceUpdate,collectionName)
@@ -63,7 +64,7 @@ class HadithBooksViewModel @Inject constructor(
             }
 
             _noHadithBookLabel.value
-            _dataLoading.value = false
+            _dataLoading.value =false
         }
 
     }

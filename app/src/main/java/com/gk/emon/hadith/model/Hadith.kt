@@ -8,9 +8,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "hadith")
 data class Hadith(
-    val bookNumber: String,
+    val bookNumber: String="",
     val chapterId: String,
-    val collection: String,
+    var collection: String,
     val hadith: List<HadithMeta>,
     @PrimaryKey val hadithNumber: String
 ) {

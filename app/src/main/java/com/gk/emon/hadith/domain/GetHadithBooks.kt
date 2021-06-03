@@ -12,12 +12,12 @@ class GetHadithBooks @Inject constructor(private val hadithRepositoryNavigation:
         forceUpdate: Boolean = false, collectionName: String
     ): Result<List<HadithBook>> {
 
-        val hadithCollections = hadithRepositoryNavigation.getHadithBooks(forceUpdate,collectionName)
+        val hadithBooks = hadithRepositoryNavigation.getHadithBooks(forceUpdate,collectionName)
 
-        if (hadithCollections is Result.Success) {
-            return hadithCollections
+        if (hadithBooks is Result.Success) {
+            return hadithBooks
         }
-        return hadithCollections
+        return hadithBooks
 
     }
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.*
@@ -60,8 +61,11 @@ class HadithsFragment : BaseFragment() {
 
     private fun setupNavigation() {
         viewModelHadiths.openHadithEvent.observe(this.viewLifecycleOwner, EventObserver {
-            /* val action = HaD.actionCollectionsToBooks(it.name,it.getProperCollectionEnglishName())
-             findNavController().navigate(action)*/
+            val action = HadithsFragmentDirections.actionHadithListToDetail(
+                it.hadithNumber,
+                it.collection
+            )
+            findNavController().navigate(action)
         })
     }
 

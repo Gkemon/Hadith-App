@@ -12,10 +12,7 @@ import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentBooksBinding
-import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionAdapter
 import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment
-import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragmentDirections
-import com.gk.emon.hadith.ui.list.hadiths.HadithsFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,20 +43,20 @@ class HadithBooksFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListAdapter()
-        setupLoading()
         setupNavigation()
+        viewModelHadithBooks.dataLoading.observe(this.viewLifecycleOwner, Observer {
+            handleLoading(it)
+        })
         viewModelHadithBooks.loadBooks(true, args.collectionName)
     }
 
-    private fun setupLoading() {
-        viewModelHadithBooks.dataLoading.observe(this.viewLifecycleOwner, Observer {
-            if (it) {
-                viewDataBinding.tvEmpty.invisible()
-                showLoadingPopup(activity)
-            } else {
-                hideLoadingPopup(activity)
-            }
-        })
+    private fun handleLoading(show: Boolean) {
+        if (show) {
+            viewDataBinding.tvEmpty.invisible()
+            showLoadingPopup(activity)
+        } else {
+            hideLoadingPopup(activity)
+        }
     }
 
     private fun setupNavigation() {

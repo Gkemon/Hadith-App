@@ -44,7 +44,7 @@ internal interface HadithApis {
     fun hadith(
         @Path(collectionName) collectionNameValue: String,
         @Path(hadithNumber) hadithNumberValue: String
-    ): Call<Hadith>
+    ): Call<HadithDetailsResponse>
 
     @GET("collections/{$collectionName}/books/{$bookNumber}/hadiths")
     fun hadithsOfBook(

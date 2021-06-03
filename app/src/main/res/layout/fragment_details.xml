@@ -1,34 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <import type="android.view.View" />
+
         <import type="androidx.core.content.ContextCompat" />
+
         <variable
             name="viewModel"
             type="com.gk.emon.hadith.ui.details.HadithDetailsViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_empty"
             style="@style/TitleTextViewStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/no_hadith_available"
-            android:visibility="@{viewModel.empty?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_medicine_list"
-            app:layout_constraintEnd_toEndOf="@+id/rv_medicine_list"
-            app:layout_constraintStart_toStartOf="@+id/rv_medicine_list"
-            app:layout_constraintTop_toTopOf="@+id/rv_medicine_list"
-            tools:visibility="visible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="English"
+            android:textAlignment="center"></TextView>
+
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@{viewModel.hadith.properBodyHadithEnglish}"
+            android:textAlignment="center"
+            android:textColor="@color/colorSuccessGreen"></TextView>
+
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Arabic"
+            android:textAlignment="center"></TextView>
+
+        <TextView
+            style="@style/TitleTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@{viewModel.hadith.properBodyHadithArabic}"
+            android:textAlignment="center"
+            android:textColor="@color/colorSuccessGreen"></TextView>
+    </LinearLayout>
 </layout>

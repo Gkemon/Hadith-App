@@ -16,7 +16,7 @@ class HadithService
     override fun books(collectionNameValue: String): Call<HadithBooksResponse> =
         hadithApis.books(collectionNameValue)
 
-    override fun hadith(collectionNameValue: String, hadithNumberValue: String): Call<Hadith> =
+    override fun hadith(collectionNameValue: String, hadithNumberValue: String): Call<HadithDetailsResponse> =
         hadithApis.hadith(collectionNameValue, hadithNumberValue)
 
     override fun hadithsOfBook(

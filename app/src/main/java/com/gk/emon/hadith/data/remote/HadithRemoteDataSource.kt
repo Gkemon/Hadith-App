@@ -63,7 +63,7 @@ class HadithRemoteDataSource @Inject constructor(
     ): Result<List<Hadith>> {
         return when (networkHandler.isNetworkAvailable()) {
             true -> request(
-                service.hadithsOfBook(collectionName, bookNumber,10,1),
+                service.hadithsOfBook(collectionName, bookNumber, 10, 1),
                 { it.data },
                 emptyList()
             )
@@ -71,8 +71,16 @@ class HadithRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getHadith(collectionName: String, hadithNumber: Int): Result<Hadith> {
-        TODO("Not yet implemented")
+    override suspend fun getHadith(collectionName: String, hadithNumber: String): Result<Hadith> {
+        return when (networkHandler.isNetworkAvailable()) {
+            true -> request(
+                service.hadith(collectionName, hadithNumber),
+                //TODO: Future enhancement
+                { Hadith("","","",it.hadith,"") },
+                Hadith("", "", "", emptyList(), "")
+            )
+            false -> Result.Error(Exception("No network found"))
+        }
     }
 
     override suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>) {

@@ -43,7 +43,7 @@ class HadithCollectionsFragment : BaseFragment() {
         setupListAdapter()
         setupLoading()
         setupNavigation()
-        viewModelHadithCollections.loadCollections(true)
+        viewModelHadithCollections.loadCollections(false)
     }
 
     private fun setupLoading() {
@@ -51,26 +51,32 @@ class HadithCollectionsFragment : BaseFragment() {
             if (it) {
                 viewDataBinding.tvEmpty.invisible()
                 showLoadingPopup(activity)
-            }
-            else {
+            } else {
                 hideLoadingPopup(activity)
             }
         })
     }
 
     private fun setupNavigation() {
-        viewModelHadithCollections.openHadithCollectionEvent.observe(this.viewLifecycleOwner, EventObserver {
-            val action = HadithCollectionsFragmentDirections.actionCollectionsToBooks(it.name,it.getProperCollectionEnglishName())
-            findNavController().navigate(action)
-        })
+        viewModelHadithCollections.openHadithCollectionEvent.observe(
+            this.viewLifecycleOwner,
+            EventObserver {
+                val action = HadithCollectionsFragmentDirections.actionCollectionsToBooks(
+                    it.name,
+                    it.getProperCollectionEnglishName()
+                )
+                findNavController().navigate(action)
+            })
     }
+
     private fun setupListAdapter() {
         val viewModel = viewDataBinding.viewModel
         if (viewModel != null) {
-            hadithCollectionAdapter = HadithCollectionAdapter(R.layout.item_hadith_collections,viewModel)
+            hadithCollectionAdapter =
+                HadithCollectionAdapter(R.layout.item_hadith_collections, viewModel)
             viewDataBinding.rvMedicineList.adapter = hadithCollectionAdapter
             viewModelHadithCollections.collections.observe(this.viewLifecycleOwner, Observer {
-                if(it.isEmpty())viewDataBinding.tvEmpty.visible()
+                if (it.isEmpty()) viewDataBinding.tvEmpty.visible()
                 else viewDataBinding.tvEmpty.invisible()
                 hadithCollectionAdapter.setList(it)
             })

@@ -6,17 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.hideLoadingPopup
 import com.gk.emon.core_features.extensions.invisible
 import com.gk.emon.core_features.extensions.showLoadingPopup
 import com.gk.emon.hadith.databinding.FragmentDetailsBinding
+import com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HadithsDetailsFragment : BaseFragment() {
     private val viewModelHadithDetails: HadithDetailsViewModel by viewModels()
     private lateinit var viewDataBinding: FragmentDetailsBinding
+    private val args: HadithsDetailsFragmentArgs by navArgs()
 
     companion object {
         fun newInstance() =
@@ -39,13 +42,12 @@ class HadithsDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLoading()
-        viewModelHadithDetails.loadCollections(true)
+        viewModelHadithDetails.loadHadithDetails(false, args.collectionName, args.hadithNumber)
     }
 
     private fun setupLoading() {
         viewModelHadithDetails.dataLoading.observe(this.viewLifecycleOwner, Observer {
             if (it) {
-                viewDataBinding.tvEmpty.invisible()
                 showLoadingPopup(activity)
             } else {
                 hideLoadingPopup(activity)
