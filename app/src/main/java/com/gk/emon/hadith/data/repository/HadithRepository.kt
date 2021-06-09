@@ -1,6 +1,9 @@
 package com.gk.emon.hadith.data.repository
 
+import com.gk.emon.core_features.exceptions.Failure
 import com.gk.emon.core_features.functional.Result
+import com.gk.emon.hadith.R
+import com.gk.emon.hadith.appFailure.AppFeatureFailures
 import com.gk.emon.hadith.data.HadithDataSource
 import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
@@ -46,7 +49,9 @@ class HadithRepository @Inject constructor(
                 }
             }
 
-            return@withContext Result.Error(Exception("No hadith collection found"))
+            return@withContext Result.Error(AppFeatureFailures.CollectionListNotAvailable.apply {
+                messageStringRes = R.string.no_hadith_collection_available
+            })
         }
 
     }
@@ -110,13 +115,18 @@ class HadithRepository @Inject constructor(
 
         // Don't read from local if it's forced
         if (forceUpdate) {
-            return Result.Error(Exception("Can't force refresh: remote data source is unavailable"))
+            return Result.Error(Failure.SystemError.apply {
+                messageStringRes = R.string.error_in_server_call
+            })
         }
 
         // Local if remote fails
-        val localTasks = hadithDataSourceLocal.getHadithCollections()
-        if (localTasks is Result.Success) return localTasks
-        return Result.Error(Exception("Error fetching from remote and local"))
+        val localCollections = hadithDataSourceLocal.getHadithCollections()
+        if (localCollections is Result.Success) return localCollections
+
+        return Result.Error(AppFeatureFailures.CollectionListNotAvailable.apply {
+            message = "Failed to fetch hadith collection both from local and remote data sources"
+        })
     }
 
     private suspend fun fetchBooksFromRemoteOrLocal(
@@ -135,13 +145,17 @@ class HadithRepository @Inject constructor(
 
         // Don't read from local if it's forced
         if (forceUpdate) {
-            return Result.Error(Exception("Can't force refresh: remote data source is unavailable"))
+            return Result.Error(AppFeatureFailures.BookListNotAvailable.apply {
+                messageStringRes = R.string.error_in_server_call
+            })
         }
 
         // Local if remote fails
         val localBooks = hadithDataSourceLocal.getHadithBooks(collectionName)
         if (localBooks is Result.Success) return localBooks
-        return Result.Error(Exception("Error fetching from remote and local"))
+        return Result.Error(AppFeatureFailures.BookListNotAvailable.apply {
+
+        })
     }
 
     private suspend fun fetchHadithsFromRemoteOrLocal(
@@ -162,13 +176,17 @@ class HadithRepository @Inject constructor(
 
         // Don't read from local if it's forced
         if (forceUpdate) {
-            return Result.Error(Exception("Can't force refresh: remote data source is unavailable"))
+            return Result.Error(AppFeatureFailures.HadithListNotAvailable.apply {
+                messageStringRes = R.string.error_in_server_call
+            })
         }
 
         // Local if remote fails
         val localHadiths = hadithDataSourceLocal.getHadiths(collectionName, bookNumber)
         if (localHadiths is Result.Success) return localHadiths
-        return Result.Error(Exception("Error fetching from remote and local"))
+        return Result.Error(AppFeatureFailures.HadithListNotAvailable.apply {
+            messageStringRes = R.string.error_in_both_local_and_remote
+        })
     }
 
     private suspend fun fetchHadithDetailsFromRemoteOrLocal(
@@ -189,13 +207,17 @@ class HadithRepository @Inject constructor(
 
         // Don't read from local if it's forced
         if (forceUpdate) {
-            return Result.Error(Exception("Can't force refresh: remote data source is unavailable"))
+            return Result.Error(AppFeatureFailures.HadithNotAvailable.apply {
+                messageStringRes = R.string.error_in_server_call
+            })
         }
 
         // Local if remote fails
         val localHadiths = hadithDataSourceLocal.getHadith(collectionName, hadithNumber)
         if (localHadiths is Result.Success) return localHadiths
-        return Result.Error(Exception("Error fetching from remote and local"))
+        return Result.Error(AppFeatureFailures.HadithNotAvailable.apply {
+            messageStringRes = R.string.error_in_both_local_and_remote
+        })
     }
 
 
@@ -228,7 +250,9 @@ class HadithRepository @Inject constructor(
                 }
             }
 
-            return@withContext Result.Error(Exception("No hadith books found"))
+            return@withContext Result.Error(AppFeatureFailures.HadithBookListAvailable.apply {
+                message = "No hadith books found"
+            })
         }
     }
 
@@ -259,7 +283,10 @@ class HadithRepository @Inject constructor(
                     return@withContext Result.Success(it.data)
                 }
             }
-            return@withContext Result.Error(Exception("No hadith found"))
+
+            return@withContext Result.Error(AppFeatureFailures.HadithListNotAvailable.apply {
+                messageStringRes = R.string.no_hadith_available
+            })
         }
     }
 
@@ -288,7 +315,9 @@ class HadithRepository @Inject constructor(
             (hadiths as? Result.Success)?.let {
                 return@withContext Result.Success(it.data)
             }
-            return@withContext Result.Error(Exception("No hadith found"))
+            return@withContext Result.Error(AppFeatureFailures.HadithNotAvailable.apply {
+                messageStringRes = R.string.no_hadith_available
+            })
         }
     }
 }

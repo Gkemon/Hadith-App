@@ -11,8 +11,6 @@ import com.gk.emon.hadith.model.HadithCollection
 
 @Dao
 interface HadithDao {
-
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCollections(hadithCollections: List<HadithCollection>)
 

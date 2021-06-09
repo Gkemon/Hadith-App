@@ -1,6 +1,9 @@
 package com.gk.emon.hadith.data.remote
 
+import com.gk.emon.core_features.exceptions.Failure
 import com.gk.emon.core_features.functional.Result
+import com.gk.emon.hadith.R
+import com.gk.emon.hadith.appFailure.AppFeatureFailures
 import com.gk.emon.hadith.data.network.NetworkHandler
 import com.gk.emon.hadith.data.HadithDataSource
 import com.gk.emon.hadith.data.remote.apis.HadithService
@@ -27,10 +30,16 @@ class HadithRemoteDataSource @Inject constructor(
             val response = call.execute()
             when (response.isSuccessful) {
                 true -> Result.Success(response.body()?.let { transform(it) } ?: default)
-                false -> Result.Error(Exception("Server response is not successful"))
+                false -> {
+                    Result.Error(Failure.ServerError.apply {
+                        message = "Server response is not successful"
+                    })
+                }
             }
         } catch (exception: Throwable) {
-            Result.Error(Exception(exception))
+            Result.Error(Failure.SystemError.apply {
+                throwable = exception
+            })
         }
     }
 
@@ -42,7 +51,9 @@ class HadithRemoteDataSource @Inject constructor(
                 { it.data },
                 emptyList()
             )
-            false -> Result.Error(Exception("No network found"))
+            false -> Result.Error(Failure.NetworkConnection.apply {
+                message = "No network found"
+            })
         }
     }
 
@@ -53,7 +64,9 @@ class HadithRemoteDataSource @Inject constructor(
                 { it.data },
                 emptyList()
             )
-            false -> Result.Error(Exception("No network found"))
+            false -> Result.Error(Failure.NetworkConnection.apply {
+                message = "No network found"
+            })
         }
     }
 
@@ -67,7 +80,9 @@ class HadithRemoteDataSource @Inject constructor(
                 { it.data },
                 emptyList()
             )
-            false -> Result.Error(Exception("No network found"))
+            false -> Result.Error(Failure.NetworkConnection.apply {
+                messageStringRes = R.string.no_active_internet
+            })
         }
     }
 
@@ -76,10 +91,10 @@ class HadithRemoteDataSource @Inject constructor(
             true -> request(
                 service.hadith(collectionName, hadithNumber),
                 //TODO: Future enhancement
-                { Hadith("","","",it.hadith,"") },
+                { Hadith("", "", "", it.hadith, "") },
                 Hadith("", "", "", emptyList(), "")
             )
-            false -> Result.Error(Exception("No network found"))
+            false -> Result.Error(Failure.NetworkConnection)
         }
     }
 

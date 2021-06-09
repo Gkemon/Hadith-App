@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.*
+import com.gk.emon.core_features.functional.succeeded
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentCollectionsBinding
 import com.gk.emon.lovelyLoading.LoadingPopup
@@ -28,7 +29,7 @@ class HadithCollectionsFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewDataBinding = FragmentCollectionsBinding.inflate(inflater, container, false).apply {
             viewModel = viewModelHadithCollections
             lifecycleOwner = this@HadithCollectionsFragment.viewLifecycleOwner
@@ -74,15 +75,13 @@ class HadithCollectionsFragment : BaseFragment() {
         if (viewModel != null) {
             hadithCollectionAdapter =
                 HadithCollectionAdapter(R.layout.item_hadith_collections, viewModel)
-            viewDataBinding.rvMedicineList.adapter = hadithCollectionAdapter
-            viewModelHadithCollections.collections.observe(this.viewLifecycleOwner, Observer {
+            viewDataBinding.rvCollectionList.adapter = hadithCollectionAdapter
+            viewModelHadithCollections.collections.observe(this.viewLifecycleOwner, {
                 if (it.isEmpty()) viewDataBinding.tvEmpty.visible()
                 else viewDataBinding.tvEmpty.invisible()
                 hadithCollectionAdapter.setList(it)
             })
         }
-
-
     }
 
 }

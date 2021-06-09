@@ -30,7 +30,7 @@ class HadithsFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewDataBinding = FragmentHadithsBinding.inflate(inflater, container, false).apply {
             viewModel = viewModelHadiths
             lifecycleOwner = this@HadithsFragment.viewLifecycleOwner

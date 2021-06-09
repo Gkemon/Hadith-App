@@ -17,7 +17,6 @@
 package com.gk.emon.core_features.functional
 
 import com.gk.emon.core_features.exceptions.Failure
-import java.lang.Exception
 
 
 /**
@@ -27,7 +26,7 @@ import java.lang.Exception
 sealed class Result<out R> {
 
     data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val failure: Exception) : Result<Nothing>()
+    data class Error(val failure: Failure) : Result<Nothing>()
     object Loading : Result<Nothing>()
 
     override fun toString(): String {

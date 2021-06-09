@@ -1,5 +1,6 @@
 package com.gk.emon.hadith.ui.list.hadithCollections
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.gk.emon.core_features.extensions.Event
 import com.gk.emon.core_features.functional.Result
@@ -15,34 +16,26 @@ class HadithCollectionsViewModel @Inject constructor(
     private val getHadithCollections: GetHadithCollections
 ) : ViewModel() {
 
-    private val _items = MutableLiveData<List<HadithCollection>>().apply { value = emptyList() }
+    private val _items =
+        MutableLiveData<List<HadithCollection>>().apply { value = emptyList() }
+
     val collections: LiveData<List<HadithCollection>> = _items
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
-    private val _noHadithCollectionLabel = MutableLiveData<Int>()
-    val noHadithCollectionLabel: LiveData<Int> = _noHadithCollectionLabel
-    private val _noHadithCollectionIconRes = MutableLiveData<Int>()
-    val noHadithCollectionIconRes: LiveData<Int> = _noHadithCollectionIconRes
 
-    // This LiveData depends on another so we can use a transformation.
     val empty: LiveData<Boolean> = Transformations.map(_items) {
         it.isEmpty()
     }
 
-    private val _snackbarText = MutableLiveData<Event<Int>>()
-    val snackbarText: LiveData<Event<Int>> = _snackbarText
-
-    // Not used at the moment
-    private val isDataLoadingError = MutableLiveData<Boolean>()
+    private val _snackbarText = MutableLiveData<Event<String>>()
+    val snackbarText: LiveData<Event<String>> = _snackbarText
 
 
     private val _openHadithCollectionEvent = MutableLiveData<Event<HadithCollection>>()
     val openHadithCollectionEvent: LiveData<Event<HadithCollection>> = _openHadithCollectionEvent
 
-    /**
-     * Called by Data Binding.
-     */
+
     fun openHadithCollection(hadithCollection: HadithCollection) {
         _openHadithCollectionEvent.value = Event(hadithCollection)
     }
@@ -50,24 +43,24 @@ class HadithCollectionsViewModel @Inject constructor(
 
     fun loadCollections(forceUpdate: Boolean) {
         _dataLoading.value = true
-
-            viewModelScope.launch {
-                val collectionResult = getHadithCollections(forceUpdate)
-                if (collectionResult is Result.Success) {
-                    isDataLoadingError.value = false
-                    _items.value = collectionResult.data
-                } else {
-                    isDataLoadingError.value = false
+        viewModelScope.launch {
+            when (val collectionResult = getHadithCollections(forceUpdate)) {
+                is Error -> {
                     _items.value = emptyList()
-                    showSnackbarMessage(R.string.loading_collection_error)
+                    (collectionResult as Result.Error).failure.message?.let { showSnackbarMessage(it) }
                 }
-
-                _noHadithCollectionLabel.value
-                _dataLoading.value = false
+                is Result.Success -> {
+                    _items.value = collectionResult.data
+                }
             }
 
+
+            _dataLoading.value = false
+        }
+
     }
-    private fun showSnackbarMessage(message: Int) {
+
+    private fun showSnackbarMessage(message: String) {
         _snackbarText.value = Event(message)
     }
 
