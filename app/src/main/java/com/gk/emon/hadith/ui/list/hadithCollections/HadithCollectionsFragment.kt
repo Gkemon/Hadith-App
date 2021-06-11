@@ -48,7 +48,7 @@ class HadithCollectionsFragment : BaseFragment() {
     }
 
     private fun setupLoading() {
-        viewModelHadithCollections.dataLoading.observe(this.viewLifecycleOwner, Observer {
+        viewModelHadithCollections.dataLoading.observe(this.viewLifecycleOwner, {
             if (it) {
                 viewDataBinding.tvEmpty.invisible()
                 showLoadingPopup(activity)

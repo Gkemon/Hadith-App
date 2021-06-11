@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -13,6 +14,7 @@ import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentBooksBinding
 import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment
+import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,7 +32,7 @@ class HadithBooksFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewDataBinding = FragmentBooksBinding.inflate(inflater, container, false).apply {
             viewModel = viewModelHadithBooks
             lifecycleOwner = this@HadithBooksFragment.viewLifecycleOwner
@@ -44,10 +46,19 @@ class HadithBooksFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupListAdapter()
         setupNavigation()
-        viewModelHadithBooks.dataLoading.observe(this.viewLifecycleOwner, Observer {
+        setupToast()
+        viewModelHadithBooks.dataLoading.observe(this.viewLifecycleOwner, {
             handleLoading(it)
         })
         viewModelHadithBooks.loadBooks(true, args.collectionName)
+    }
+
+    private fun setupToast() {
+        viewModelHadithBooks.snackbarText.observe(
+            this.viewLifecycleOwner,
+            EventObserver {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            })
     }
 
     private fun handleLoading(show: Boolean) {
