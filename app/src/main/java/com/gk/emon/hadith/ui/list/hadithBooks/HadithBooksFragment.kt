@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
@@ -14,7 +13,6 @@ import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentBooksBinding
 import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment
-import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -47,18 +45,14 @@ class HadithBooksFragment : BaseFragment() {
         setupListAdapter()
         setupNavigation()
         setupToast()
-        viewModelHadithBooks.dataLoading.observe(this.viewLifecycleOwner, {
-            handleLoading(it)
-        })
-        viewModelHadithBooks.loadBooks(true, args.collectionName)
+        viewModelHadithBooks.dataLoading.observe(this.viewLifecycleOwner, ::handleLoading)
+        viewModelHadithBooks.loadBooks(false, args.collectionName)
     }
 
     private fun setupToast() {
         viewModelHadithBooks.snackbarText.observe(
             this.viewLifecycleOwner,
-            EventObserver {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-            })
+            EventObserver { Toast.makeText(context, it, Toast.LENGTH_LONG).show()})
     }
 
     private fun handleLoading(show: Boolean) {
@@ -87,14 +81,12 @@ class HadithBooksFragment : BaseFragment() {
         if (viewModel != null) {
             hadithBooksAdapter = HadithBooksAdapter(R.layout.item_hadith_books, viewModel)
             viewDataBinding.rvBooksList.adapter = hadithBooksAdapter
-            viewModelHadithBooks.books.observe(this.viewLifecycleOwner, Observer {
+            viewModelHadithBooks.books.observe(this.viewLifecycleOwner, {
                 if (it.isEmpty()) viewDataBinding.tvEmpty.visible()
                 else viewDataBinding.tvEmpty.invisible()
                 hadithBooksAdapter.setList(it)
             })
         }
-
-
     }
 
 }

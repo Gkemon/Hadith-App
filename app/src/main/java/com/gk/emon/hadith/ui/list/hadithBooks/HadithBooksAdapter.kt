@@ -4,9 +4,7 @@ import androidx.annotation.LayoutRes
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseDataBindingHolder
 import com.gk.emon.hadith.databinding.ItemHadithBooksBinding
-import com.gk.emon.hadith.databinding.ItemHadithCollectionsBinding
 import com.gk.emon.hadith.model.HadithBook
-import com.gk.emon.hadith.model.HadithCollection
 
 /**
  * Created by Gk Emon on 10/9/2020.

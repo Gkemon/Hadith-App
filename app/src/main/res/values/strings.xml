@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Learn Hadith</string>
     <string name="loading_collection_error">Hadith collection is not loading</string>
-    <string name="no_hadith_collection_available">No hadith collection is available</string>
+    <string name="no_data_available">No data is available</string>
     <string name="no_active_internet">No active internet</string>
     <string name="no_hadith_available">No hadith available</string>
     <string name="error_in_server_call">Error while calling server</string>

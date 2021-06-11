@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -43,6 +44,7 @@ class HadithCollectionsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupListAdapter()
         setupLoading()
+        setupToast()
         setupNavigation()
         viewModelHadithCollections.loadCollections(false)
     }
@@ -53,6 +55,7 @@ class HadithCollectionsFragment : BaseFragment() {
                 viewDataBinding.tvEmpty.invisible()
                 showLoadingPopup(activity)
             } else {
+                viewDataBinding.tvEmpty.visible()
                 hideLoadingPopup(activity)
             }
         })
@@ -70,6 +73,12 @@ class HadithCollectionsFragment : BaseFragment() {
             })
     }
 
+    private fun setupToast() {
+        viewModelHadithCollections.snackbarText.observe(
+            this.viewLifecycleOwner,
+            EventObserver { Toast.makeText(context, it, Toast.LENGTH_LONG).show()})
+    }
+
     private fun setupListAdapter() {
         val viewModel = viewDataBinding.viewModel
         if (viewModel != null) {
@@ -77,8 +86,6 @@ class HadithCollectionsFragment : BaseFragment() {
                 HadithCollectionAdapter(R.layout.item_hadith_collections, viewModel)
             viewDataBinding.rvCollectionList.adapter = hadithCollectionAdapter
             viewModelHadithCollections.collections.observe(this.viewLifecycleOwner, {
-                if (it.isEmpty()) viewDataBinding.tvEmpty.visible()
-                else viewDataBinding.tvEmpty.invisible()
                 hadithCollectionAdapter.setList(it)
             })
         }

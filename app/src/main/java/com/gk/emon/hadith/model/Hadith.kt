@@ -14,6 +14,9 @@ data class Hadith(
     val hadith: List<HadithMeta>,
     @PrimaryKey val hadithNumber: String
 ) {
+
+
+
     @RequiresApi(Build.VERSION_CODES.N)
     fun getProperBodyHadithEnglish(): String {
         return if (hadith.isNotEmpty()) {

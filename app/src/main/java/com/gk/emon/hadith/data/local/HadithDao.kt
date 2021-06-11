@@ -1,9 +1,6 @@
 package com.gk.emon.hadith.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.gk.emon.hadith.model.Hadith
 import com.gk.emon.hadith.model.HadithBook
 import com.gk.emon.hadith.model.HadithCollection
@@ -11,6 +8,8 @@ import com.gk.emon.hadith.model.HadithCollection
 
 @Dao
 interface HadithDao {
+    /*Do update because if items are exist in local db then it simply update it otherwise
+    * insert it. If we annotated it as "Insert" then it will redundantly insert it */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCollections(hadithCollections: List<HadithCollection>)
 

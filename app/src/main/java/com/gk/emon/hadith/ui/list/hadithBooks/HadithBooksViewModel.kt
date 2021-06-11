@@ -1,17 +1,12 @@
 package com.gk.emon.hadith.ui.list.hadithBooks
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.*
 import com.gk.emon.core_features.extensions.Event
-import com.gk.emon.core_features.extensions.EventObserver
 import com.gk.emon.core_features.functional.Result
-import com.gk.emon.hadith.HadithApplication
-import com.gk.emon.hadith.R
 import com.gk.emon.hadith.domain.GetHadithBooks
 import com.gk.emon.hadith.model.HadithBook
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,9 +25,7 @@ class HadithBooksViewModel @Inject constructor(
     private val _noHadithBookLabel = MutableLiveData<Int>()
 
     // This LiveData depends on another so we can use a transformation.
-    val empty: LiveData<Boolean> = Transformations.map(_items) {
-        it.isEmpty()
-    }
+    val showEmpty: LiveData<Boolean> = Transformations.map(_items) {it.isEmpty() }
 
     private val _snackbarText = MutableLiveData<Event<String>>()
     val snackbarText: LiveData<Event<String>> = _snackbarText

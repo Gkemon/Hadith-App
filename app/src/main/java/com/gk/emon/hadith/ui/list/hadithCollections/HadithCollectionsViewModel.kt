@@ -1,5 +1,7 @@
 package com.gk.emon.hadith.ui.list.hadithCollections
 
+import android.app.Application
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.gk.emon.core_features.extensions.Event
@@ -8,6 +10,7 @@ import com.gk.emon.hadith.R
 import com.gk.emon.hadith.domain.GetHadithCollections
 import com.gk.emon.hadith.model.HadithCollection
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,7 +18,6 @@ import javax.inject.Inject
 class HadithCollectionsViewModel @Inject constructor(
     private val getHadithCollections: GetHadithCollections
 ) : ViewModel() {
-
     private val _items =
         MutableLiveData<List<HadithCollection>>().apply { value = emptyList() }
 
@@ -24,10 +26,10 @@ class HadithCollectionsViewModel @Inject constructor(
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
-    val empty: LiveData<Boolean> = Transformations.map(_items) {
-        it.isEmpty()
-    }
+    val showEmpty: LiveData<Boolean> = Transformations.map(_items) { it.isEmpty() }
 
+    @Inject
+    lateinit var context: Application
     private val _snackbarText = MutableLiveData<Event<String>>()
     val snackbarText: LiveData<Event<String>> = _snackbarText
 
@@ -45,9 +47,9 @@ class HadithCollectionsViewModel @Inject constructor(
         _dataLoading.value = true
         viewModelScope.launch {
             when (val collectionResult = getHadithCollections(forceUpdate)) {
-                is Error -> {
+                is Result.Error -> {
                     _items.value = emptyList()
-                    (collectionResult as Result.Error).failure.message?.let { showSnackbarMessage(it) }
+                    collectionResult.failure.getProperError(context).let { showSnackbarMessage(it) }
                 }
                 is Result.Success -> {
                     _items.value = collectionResult.data

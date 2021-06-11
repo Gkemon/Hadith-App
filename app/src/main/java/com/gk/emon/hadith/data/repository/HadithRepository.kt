@@ -38,30 +38,28 @@ class HadithRepository @Inject constructor(
             val hadithCollections = fetchHadithCollectionsFromRemoteOrLocal(forceUpdate)
             // Refresh the cache with the hadith collections
             (hadithCollections as? Result.Success)?.data?.forEach { cacheHadithCollection(it) }
-
-            cachedCollections?.values?.let { tasks ->
-                return@withContext Result.Success(tasks.sortedBy { it.name })
+            cachedCollections?.values?.let { collections ->
+                return@withContext Result.Success(collections.sortedBy { it.name })
             }
-
-            (hadithCollections as? Result.Success)?.let {
-                if (it.data.isEmpty()) {
-                    return@withContext Result.Success(it.data)
-                }
-            }
-
             return@withContext Result.Error(AppFeatureFailures.CollectionListNotAvailable.apply {
-                messageStringRes = R.string.no_hadith_collection_available
+                messageStringRes = R.string.error_in_both_local_and_remote
             })
         }
 
     }
 
-    private suspend fun refreshLocalHadithCollections(collections: List<HadithCollection>) {
+    private suspend fun refreshLocalHadithCollections(collections: List<HadithCollection>): Result<List<HadithCollection>> {
         hadithDataSourceLocal.saveHadithCollections(collections)
+        return hadithDataSourceLocal.getHadithCollections()
     }
 
-    private suspend fun refreshLocalHadithBooks(hadithBooks: List<HadithBook>) {
+    private suspend fun refreshLocalHadithBooks(
+        hadithBooks: List<HadithBook>,
+        collectionName: String
+    ): Result<List<HadithBook>> {
+        hadithBooks.map { it.collectionName = collectionName }
         hadithDataSourceLocal.saveHadithBooks(hadithBooks)
+        return hadithDataSourceLocal.getHadithBooks(collectionName)
     }
 
     private suspend fun refreshLocalHadiths(hadiths: List<Hadith>, collectionName: String) {
@@ -105,19 +103,10 @@ class HadithRepository @Inject constructor(
     private suspend fun fetchHadithCollectionsFromRemoteOrLocal(forceUpdate: Boolean): Result<List<HadithCollection>> {
         // Remote first
         when (val remoteCollection = hadithDataSourceRemote.getHadithCollections()) {
-            is Error -> return Result.Error((remoteCollection as Result.Error).failure)
+            is Result.Error -> if (forceUpdate) return Result.Error(remoteCollection.failure)
             is Result.Success -> {
-                refreshLocalHadithCollections(remoteCollection.data)
-                return remoteCollection
+                return refreshLocalHadithCollections(remoteCollection.data)
             }
-        }
-
-
-        // Don't read from local if it's forced
-        if (forceUpdate) {
-            return Result.Error(Failure.SystemError.apply {
-                messageStringRes = R.string.error_in_server_call
-            })
         }
 
         // Local if remote fails
@@ -125,7 +114,7 @@ class HadithRepository @Inject constructor(
         if (localCollections is Result.Success) return localCollections
 
         return Result.Error(AppFeatureFailures.CollectionListNotAvailable.apply {
-            message = "Failed to fetch hadith collection both from local and remote data sources"
+            messageStringRes = R.string.error_in_both_local_and_remote
         })
     }
 
@@ -135,26 +124,17 @@ class HadithRepository @Inject constructor(
     ): Result<List<HadithBook>> {
         // Remote first
         when (val remoteBooks = hadithDataSourceRemote.getHadithBooks(collectionName)) {
-            is Error -> return Result.Error((remoteBooks as Result.Error).failure)
+            is Result.Error -> if (forceUpdate) return Result.Error(remoteBooks.failure)
             is Result.Success -> {
-                refreshLocalHadithBooks(remoteBooks.data)
-                return remoteBooks
+                return refreshLocalHadithBooks(remoteBooks.data, collectionName)
             }
-        }
-
-
-        // Don't read from local if it's forced
-        if (forceUpdate) {
-            return Result.Error(AppFeatureFailures.BookListNotAvailable.apply {
-                messageStringRes = R.string.error_in_server_call
-            })
         }
 
         // Local if remote fails
         val localBooks = hadithDataSourceLocal.getHadithBooks(collectionName)
         if (localBooks is Result.Success) return localBooks
         return Result.Error(AppFeatureFailures.BookListNotAvailable.apply {
-
+            messageStringRes = R.string.error_in_both_local_and_remote
         })
     }
 
@@ -166,7 +146,7 @@ class HadithRepository @Inject constructor(
         // Remote first
         when (val remoteHadiths =
             hadithDataSourceRemote.getHadiths(collectionName, bookNumber)) {
-            is Error -> return Result.Error((remoteHadiths as Result.Error).failure)
+            is Result.Error -> return Result.Error((remoteHadiths as Result.Error).failure)
             is Result.Success -> {
                 refreshLocalHadiths(remoteHadiths.data, collectionName)
                 return remoteHadiths
@@ -233,9 +213,11 @@ class HadithRepository @Inject constructor(
                 //TODO: memory cached data might have a bug.
                 cachedBooks?.let { cachedBooks ->
                     val cachedData =
-                        cachedBooks.values.filter { it.collectionName == collectionName }
+                        cachedBooks.values
+                            .filter { it.collectionName == collectionName }
                             .sortedBy { it.bookNumber }
-                    if (cachedData.isNullOrEmpty())
+
+                    if (cachedData.isNotEmpty())
                         return@withContext Result.Success(cachedData)
                 }
             }
