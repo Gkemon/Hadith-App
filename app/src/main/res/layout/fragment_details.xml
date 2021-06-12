@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="English"
-                android:textAlignment="center"></TextView>
+                android:textAlignment="center" />
 
             <TextView
                 style="@style/TitleTextViewStyle"
@@ -38,16 +38,15 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@{viewModel.hadith.properBodyHadithEnglish}"
                 android:textAlignment="center"
-                android:textColor="@color/colorSuccessGreen"></TextView>
+                android:textColor="@color/colorSuccessGreen" />
 
             <TextView
                 style="@style/TitleTextViewStyle"
-                android:textSize="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="Arabic"
-                android:textAlignment="center"></TextView>
+                android:textAlignment="center" />
 
             <TextView
                 style="@style/TitleTextViewStyle"

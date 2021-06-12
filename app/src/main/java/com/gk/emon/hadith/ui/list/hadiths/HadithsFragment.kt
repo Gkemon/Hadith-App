@@ -12,7 +12,6 @@ import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentHadithsBinding
-import com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -62,6 +61,7 @@ class HadithsFragment : BaseFragment() {
     private fun setupNavigation() {
         viewModelHadiths.openHadithEvent.observe(this.viewLifecycleOwner, EventObserver {
             val action = HadithsFragmentDirections.actionHadithListToDetail(
+                "Hadith no: " + it.hadithNumber,
                 it.hadithNumber,
                 it.collection
             )

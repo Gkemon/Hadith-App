@@ -9,10 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.gk.emon.core_features.base_framework_ui.BaseFragment
 import com.gk.emon.core_features.extensions.hideLoadingPopup
-import com.gk.emon.core_features.extensions.invisible
 import com.gk.emon.core_features.extensions.showLoadingPopup
 import com.gk.emon.hadith.databinding.FragmentDetailsBinding
-import com.gk.emon.hadith.ui.list.hadithBooks.HadithBooksFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
