@@ -1,6 +1,5 @@
 package com.gk.emon.hadith.data.repository
 
-import com.gk.emon.core_features.exceptions.Failure
 import com.gk.emon.core_features.functional.Result
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.appFailure.AppFeatureFailures
@@ -21,7 +20,7 @@ class HadithRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : HadithRepositoryNavigation {
     private var cachedCollections: ConcurrentMap<String, HadithCollection>? = null
-    private var cachedBooks: ConcurrentMap<Long, HadithBook>? = null
+    private var cachedBooks: ConcurrentMap<Pair<String?, String>, HadithBook>? = null
     private var cachedHadiths: ConcurrentMap<String, Hadith>? = null
 
 
@@ -31,7 +30,9 @@ class HadithRepository @Inject constructor(
             //First check that if it is persisted in memory (ram)
             if (!forceUpdate) {
                 cachedCollections?.let { cachedTasks ->
-                    return@withContext Result.Success(cachedTasks.values.sortedBy { it.name })
+                    return@withContext Result.Success(cachedTasks.values
+                        .sortedBy { it.name }
+                        .distinct())
                 }
             }
 
@@ -62,9 +63,17 @@ class HadithRepository @Inject constructor(
         return hadithDataSourceLocal.getHadithBooks(collectionName)
     }
 
-    private suspend fun refreshLocalHadiths(hadiths: List<Hadith>, collectionName: String) {
-        hadiths.map { it.collection = collectionName }
+    private suspend fun refreshLocalHadiths(
+        hadiths: List<Hadith>,
+        collectionName: String,
+        bookNumber: String
+    ): Result<List<Hadith>> {
+        hadiths.map {
+            it.collection = collectionName
+            it.bookNumber = bookNumber
+        }
         hadithDataSourceLocal.saveHadiths(hadiths)
+        return hadithDataSourceLocal.getHadiths(bookNumber, collectionName)
     }
 
     private suspend fun refreshLocalHadithDetails(hadith: Hadith, collectionName: String) {
@@ -86,7 +95,7 @@ class HadithRepository @Inject constructor(
         if (cachedBooks == null) {
             cachedBooks = ConcurrentHashMap()
         }
-        cachedBooks?.put(pendingCacheHadithBook.id, pendingCacheHadithBook)
+        cachedBooks?.put(pendingCacheHadithBook.getCompositePrimaryKey(), pendingCacheHadithBook)
         return pendingCacheHadithBook
     }
 
@@ -143,30 +152,25 @@ class HadithRepository @Inject constructor(
         collectionName: String,
         bookNumber: String
     ): Result<List<Hadith>> {
+
         // Remote first
         when (val remoteHadiths =
             hadithDataSourceRemote.getHadiths(collectionName, bookNumber)) {
-            is Result.Error -> return Result.Error((remoteHadiths as Result.Error).failure)
+            is Result.Error -> if (forceUpdate) Result.Error(remoteHadiths.failure)
             is Result.Success -> {
-                refreshLocalHadiths(remoteHadiths.data, collectionName)
+                refreshLocalHadiths(remoteHadiths.data, collectionName, bookNumber)
                 return remoteHadiths
             }
-        }
-
-
-        // Don't read from local if it's forced
-        if (forceUpdate) {
-            return Result.Error(AppFeatureFailures.HadithListNotAvailable.apply {
-                messageStringRes = R.string.error_in_server_call
-            })
         }
 
         // Local if remote fails
         val localHadiths = hadithDataSourceLocal.getHadiths(collectionName, bookNumber)
         if (localHadiths is Result.Success) return localHadiths
+
         return Result.Error(AppFeatureFailures.HadithListNotAvailable.apply {
             messageStringRes = R.string.error_in_both_local_and_remote
         })
+
     }
 
     private suspend fun fetchHadithDetailsFromRemoteOrLocal(
@@ -216,6 +220,7 @@ class HadithRepository @Inject constructor(
                         cachedBooks.values
                             .filter { it.collectionName == collectionName }
                             .sortedBy { it.bookNumber }
+                            .distinct()
 
                     if (cachedData.isNotEmpty())
                         return@withContext Result.Success(cachedData)
@@ -247,18 +252,15 @@ class HadithRepository @Inject constructor(
             //First check that if it is persisted in memory (ram)
             if (!forceUpdate) {
                 cachedHadiths?.let { cachedHadiths ->
-                    return@withContext Result.Success(cachedHadiths.values.sortedBy { it.hadithNumber })
+                    return@withContext Result.Success(cachedHadiths.values
+                        .filter { it.bookNumber == bookNumber && it.collection == collectionName }
+                        .sortedBy { it.hadithNumber })
                 }
             }
 
             val hadiths = fetchHadithsFromRemoteOrLocal(forceUpdate, collectionName, bookNumber)
             // Refresh the cache with the hadith collections
             (hadiths as? Result.Success)?.data?.forEach { cacheHadiths(it) }
-
-            //Soring
-            /* cachedHadiths?.values?.let { hadiths ->
-                 return@withContext Result.Success(hadiths.sortedBy { it.bookNumber })
-             }*/
 
             (hadiths as? Result.Success)?.let {
                 if (it.data.isNotEmpty()) {
@@ -267,7 +269,7 @@ class HadithRepository @Inject constructor(
             }
 
             return@withContext Result.Error(AppFeatureFailures.HadithListNotAvailable.apply {
-                messageStringRes = R.string.no_hadith_available
+                messageStringRes = R.string.error_in_both_local_and_remote
             })
         }
     }

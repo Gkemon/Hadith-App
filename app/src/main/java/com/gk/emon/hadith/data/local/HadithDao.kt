@@ -19,17 +19,20 @@ interface HadithDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveHadiths(hadiths: List<Hadith>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveHadith(hadith: Hadith)
+
     @Query("SELECT * FROM HadithCollection")
     suspend fun getCollections(): List<HadithCollection>
 
     @Query("SELECT * FROM HadithBook WHERE collectionName = :collection")
     suspend fun getBooks(collection: String): List<HadithBook>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveHadith(hadith: Hadith)
-
     @Query("SELECT * FROM Hadith WHERE hadithNumber = :hadithNo")
     suspend fun getHadith(hadithNo: String): Hadith
+
+    @Query("SELECT * FROM Hadith WHERE collection = :collectionName AND bookNumber = :bookName")
+    suspend fun getHadiths(collectionName: String,bookName:String): List<Hadith>
 
     /*   @Query("SELECT * FROM Tasks")
        fun observeTasks(): LiveData<List<Task>>

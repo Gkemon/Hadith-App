@@ -29,15 +29,16 @@ class HadithRoomDataSource @Inject constructor(
     override suspend fun getHadiths(
         collectionName: String,
         bookNumber: String
-    ): Result<List<Hadith>> {
-        TODO("Not yet implemented")
-    }
+    ): Result<List<Hadith>> =
+        withContext(ioDispatcher) {
+            Result.Success(hadithDao.getHadiths(collectionName, bookNumber))
+        }
+
 
     override suspend fun getHadith(collectionName: String, hadithNumber: String): Result<Hadith> =
         withContext(ioDispatcher) {
             Result.Success(hadithDao.getHadith(collectionName))
         }
-
 
 
     override suspend fun saveHadithCollections(hadithCollections: List<HadithCollection>) =

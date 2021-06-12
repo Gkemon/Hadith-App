@@ -4,17 +4,20 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "hadith")
+@Entity(tableName = "hadith", primaryKeys = [Hadith.COLLECTION_NAME_KEY, Hadith.HADITH_NUMBER_KEY])
 data class Hadith(
-    val bookNumber: String="",
+    var bookNumber: String = "",
     val chapterId: String,
     var collection: String,
     val hadith: List<HadithMeta>,
-    @PrimaryKey val hadithNumber: String
+    val hadithNumber: String
 ) {
-
+    companion object {
+        //"const" for compile time and "val" for run time.
+        const val HADITH_NUMBER_KEY = "hadithNumber"
+        const val COLLECTION_NAME_KEY = "collection"
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -31,3 +34,4 @@ data class Hadith(
         } else ""
     }
 }
+

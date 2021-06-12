@@ -45,11 +45,11 @@ class HadithsFragment : BaseFragment() {
         setupListAdapter()
         setupLoading()
         setupNavigation()
-        viewModelHadiths.loadHadiths(true, args.collectionName, args.bookNumber)
+        viewModelHadiths.loadHadiths(false, args.collectionName, args.bookNumber)
     }
 
     private fun setupLoading() {
-        viewModelHadiths.dataLoading.observe(this.viewLifecycleOwner, Observer {
+        viewModelHadiths.dataLoading.observe(this.viewLifecycleOwner, {
             if (it) {
                 viewDataBinding.tvEmpty.invisible()
                 showLoadingPopup(activity)
@@ -74,7 +74,7 @@ class HadithsFragment : BaseFragment() {
         if (viewModel != null) {
             hadithsAdapter = HadithsAdapter(R.layout.item_hadiths, viewModel)
             viewDataBinding.rvMedicineList.adapter = hadithsAdapter
-            viewModelHadiths.hadiths.observe(this.viewLifecycleOwner, Observer {
+            viewModelHadiths.hadiths.observe(this.viewLifecycleOwner, {
                 if (it.isEmpty()) viewDataBinding.tvEmpty.visible()
                 else viewDataBinding.tvEmpty.invisible()
                 hadithsAdapter.setList(it)
