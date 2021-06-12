@@ -252,9 +252,12 @@ class HadithRepository @Inject constructor(
             //First check that if it is persisted in memory (ram)
             if (!forceUpdate) {
                 cachedHadiths?.let { cachedHadiths ->
-                    return@withContext Result.Success(cachedHadiths.values
+                    val cachedData = cachedHadiths.values
                         .filter { it.bookNumber == bookNumber && it.collection == collectionName }
-                        .sortedBy { it.hadithNumber })
+                        .sortedBy { it.hadithNumber }
+
+                    if (cachedData.isNotEmpty())
+                        return@withContext Result.Success(cachedData)
                 }
             }
 
