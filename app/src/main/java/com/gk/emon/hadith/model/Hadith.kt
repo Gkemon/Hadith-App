@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import androidx.room.Entity
 
+
+
 @Entity(tableName = "hadith", primaryKeys = [Hadith.COLLECTION_NAME_KEY, Hadith.HADITH_NUMBER_KEY])
 data class Hadith(
     var bookNumber: String = "",
@@ -32,6 +34,10 @@ data class Hadith(
         return if (hadith.isNotEmpty()) {
             android.text.Html.fromHtml(hadith[1].body, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
         } else ""
+    }
+
+    fun getCompositePrimaryKey(): Pair<String, String> {
+        return Pair(collection, hadithNumber)
     }
 }
 

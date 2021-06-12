@@ -21,7 +21,7 @@ class HadithRepository @Inject constructor(
 ) : HadithRepositoryNavigation {
     private var cachedCollections: ConcurrentMap<String, HadithCollection>? = null
     private var cachedBooks: ConcurrentMap<Pair<String?, String>, HadithBook>? = null
-    private var cachedHadiths: ConcurrentMap<String, Hadith>? = null
+    private var cachedHadiths: ConcurrentMap<Pair<String, String>, Hadith>? = null
 
 
     override suspend fun getHadithCollections(forceUpdate: Boolean): Result<List<HadithCollection>> {
@@ -76,9 +76,9 @@ class HadithRepository @Inject constructor(
         return hadithDataSourceLocal.getHadiths(bookNumber, collectionName)
     }
 
-    private suspend fun refreshLocalHadithDetails(hadith: Hadith, collectionName: String) {
-        hadith.collection = collectionName
+    private suspend fun refreshLocalHadithDetails(hadith: Hadith): Result<Hadith> {
         hadithDataSourceLocal.saveHadith(hadith)
+        return hadithDataSourceLocal.getHadith(hadith.collection, hadith.hadithNumber)
     }
 
     private fun cacheHadithCollection(pendingCacheHadithCollection: HadithCollection): HadithCollection {
@@ -104,7 +104,7 @@ class HadithRepository @Inject constructor(
         if (cachedHadiths == null) {
             cachedHadiths = ConcurrentHashMap()
         }
-        cachedHadiths?.put(pendingCacheHadith.hadithNumber, pendingCacheHadith)
+        cachedHadiths?.put(pendingCacheHadith.getCompositePrimaryKey(), pendingCacheHadith)
         return pendingCacheHadith
     }
 
@@ -181,24 +181,14 @@ class HadithRepository @Inject constructor(
         // Remote first
         when (val remoteHadith =
             hadithDataSourceRemote.getHadith(collectionName, hadithNumber)) {
-            is Error -> return Result.Error((remoteHadith as Result.Error).failure)
+            is Result.Error -> if (forceUpdate) return Result.Error(remoteHadith.failure)
             is Result.Success -> {
-                refreshLocalHadithDetails(remoteHadith.data, collectionName)
-                return remoteHadith
+                return refreshLocalHadithDetails(remoteHadith.data)
             }
         }
-
-
-        // Don't read from local if it's forced
-        if (forceUpdate) {
-            return Result.Error(AppFeatureFailures.HadithNotAvailable.apply {
-                messageStringRes = R.string.error_in_server_call
-            })
-        }
-
         // Local if remote fails
-        val localHadiths = hadithDataSourceLocal.getHadith(collectionName, hadithNumber)
-        if (localHadiths is Result.Success) return localHadiths
+        val localHadith = hadithDataSourceLocal.getHadith(collectionName, hadithNumber)
+        if (localHadith is Result.Success) return localHadith
         return Result.Error(AppFeatureFailures.HadithNotAvailable.apply {
             messageStringRes = R.string.error_in_both_local_and_remote
         })
@@ -284,20 +274,33 @@ class HadithRepository @Inject constructor(
     ): Result<Hadith> {
         return withContext(ioDispatcher) {
             //First check that if it is persisted in memory (ram)
-            /* if (!forceUpdate) {
-                 cachedHadiths?.let { cachedHadiths ->
-                     return@withContext Result.Success(cachedHadiths.values.sortedBy { it.hadithNumber })
-                 }
-             }*/
+
+            if (!forceUpdate) {
+                cachedHadiths?.let { cachedHadiths ->
+                    cachedHadiths
+                        .values
+                        .find { it.getCompositePrimaryKey() == Pair(collectionName, hadithNumber) }
+                        ?.let {
+                            return@withContext Result.Success(it)
+                        }
+                }
+            }
 
             val hadiths =
                 fetchHadithDetailsFromRemoteOrLocal(forceUpdate, collectionName, hadithNumber)
 
-            //TODO: Do in memory cache lated
+            // Refresh the cache with the hadith collections
+            (hadiths as? Result.Success)?.data?.let { cacheHadiths(it) }
+
             //Soring
-            /* cachedHadiths?.values?.let { hadiths ->
-                 return@withContext Result.Success(hadiths.sortedBy { it.bookNumber })
-             }*/
+            cachedHadiths?.values?.let { cachedHadiths ->
+                cachedHadiths
+                    .find { it.getCompositePrimaryKey() == Pair(collectionName, hadithNumber) }
+                    ?.let {
+                        return@withContext Result.Success(it)
+                    }
+            }
+
 
             (hadiths as? Result.Success)?.let {
                 return@withContext Result.Success(it.data)
