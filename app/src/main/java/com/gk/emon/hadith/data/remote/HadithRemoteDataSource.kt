@@ -3,8 +3,7 @@ package com.gk.emon.hadith.data.remote
 import com.gk.emon.core_features.exceptions.Failure
 import com.gk.emon.core_features.functional.Result
 import com.gk.emon.hadith.R
-import com.gk.emon.hadith.appFailure.AppFeatureFailures
-import com.gk.emon.hadith.data.network.NetworkHandler
+import com.gk.emon.core_features.network.NetworkHandler
 import com.gk.emon.hadith.data.HadithDataSource
 import com.gk.emon.hadith.data.remote.apis.HadithService
 import com.gk.emon.hadith.model.Hadith

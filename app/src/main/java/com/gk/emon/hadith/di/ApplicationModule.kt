@@ -22,7 +22,7 @@ import com.gk.emon.hadith.data.HadithDataSource
 import com.gk.emon.hadith.data.local.HadithPreference
 import com.gk.emon.hadith.data.local.HadithRoomDataSource
 import com.gk.emon.hadith.data.local.HadithRoomDatabase
-import com.gk.emon.hadith.data.network.NetworkHandler
+import com.gk.emon.core_features.network.NetworkHandler
 import com.gk.emon.hadith.data.remote.HadithRemoteDataSource
 import com.gk.emon.hadith.data.remote.TokenInterceptor
 import com.gk.emon.hadith.data.remote.apis.HadithApis
