@@ -1,13 +1,10 @@
 package com.gk.emon.core_features.network
 
 import android.content.Context
-import android.net.ConnectivityManager
+import android.net.*
 import android.net.ConnectivityManager.NetworkCallback
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Build
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import com.gk.emon.core_features.extensions.Event
 import com.gk.emon.core_features.extensions.connectivityManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -47,32 +44,52 @@ class NetworkHandler
     sealed class NetworkEvent(open var network: Network? = null) {
         object NetworkConnected : NetworkEvent()
         object NetworkDisconnected : NetworkEvent()
-        object NetworkStateUnknown : NetworkEvent()
-
+        object NetworkUnavailable : NetworkEvent()
     }
 
-    fun networkConnectivityEventListener(): MutableLiveData<Event<NetworkEvent>> {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val builder = NetworkRequest.Builder()
-        val networkEventsLiveData =
-            MutableLiveData<Event<NetworkEvent>>(Event(NetworkEvent.NetworkStateUnknown))
-        cm.registerNetworkCallback(
-            builder.build(),
-            object : NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    networkEventsLiveData.postValue(Event(NetworkEvent.NetworkConnected.apply {
-                        this.network = network
-                    }))
-                }
+    interface NetworkConnectivityListener {
+        fun onNetworkConnected(networkEvent: NetworkEvent)
+        fun onNetworkDisconnected(networkEvent: NetworkEvent)
+    }
 
-                override fun onLost(network: Network) {
-                    networkEventsLiveData.postValue(Event(NetworkEvent.NetworkDisconnected.apply {
-                        this.network = network
-                    }))
-                }
+    class ConnectionLiveData(private val context: Context) : LiveData<Event<NetworkEvent>>() {
+        private val cm =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        private var networkCallback = object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                postValue((Event(NetworkEvent.NetworkConnected.apply {
+                    this.network = network
+                })))
             }
-        )
-        return networkEventsLiveData
-    }
 
+            override fun onUnavailable() {
+                postValue((Event(NetworkEvent.NetworkUnavailable)))
+            }
+
+            override fun onLost(network: Network) {
+                postValue((Event(NetworkEvent.NetworkDisconnected.apply {
+                    this.network = network
+                })))
+            }
+        }
+
+        override fun onActive() {
+            super.onActive()
+
+            if (!NetworkHandler(context).isNetworkAvailable())
+                postValue((Event(NetworkEvent.NetworkUnavailable)))
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                cm.registerDefaultNetworkCallback(networkCallback)
+            } else {
+                val networkRequest = NetworkRequest.Builder().build()
+                cm.registerNetworkCallback(networkRequest, networkCallback)
+            }
+        }
+
+        override fun onInactive() {
+            super.onInactive()
+            cm.unregisterNetworkCallback(networkCallback)
+        }
+    }
 }

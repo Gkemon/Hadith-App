@@ -5,8 +5,8 @@ import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.gk.emon.core_features.base_framework_ui.BaseActivity
-import com.gk.emon.core_features.base_framework_ui.BaseFragment
+import com.gk.emon.core_features.base_ui_containers.BaseActivity
+import com.gk.emon.core_features.base_ui_containers.BaseFragment
 import com.gk.emon.lovelyLoading.LoadingPopup
 
 fun BaseFragment.close() = fragmentManager?.popBackStack()

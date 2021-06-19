@@ -52,6 +52,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     api project(":easy-loading")
     implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
 
     //Hilt
     implementation "com.google.dagger:hilt-android:${hilt_version}"

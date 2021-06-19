@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.gk.emon.core_features.base_framework_ui.BaseFragment
+import com.gk.emon.core_features.base_ui_containers.BaseFragment
 import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentBooksBinding

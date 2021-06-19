@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start">
+    tools:openDrawer="end">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,6 +24,18 @@
                 android:theme="@style/Toolbar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/tv_no_internet_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:padding="@dimen/_2sdp"
+            android:text="@string/content_not_synced_turn_on_internet_and_refresh"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <fragment
             android:id="@+id/nav_host_fragment"

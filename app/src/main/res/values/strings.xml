@@ -6,4 +6,5 @@
     <string name="no_hadith_available">No hadith available</string>
     <string name="error_in_server_call">Error while calling server</string>
     <string name="error_in_both_local_and_remote">Failed to fetch hadith both from local and remote data sources</string>
+    <string name="content_not_synced_turn_on_internet_and_refresh">Content not synced. Turn on internet and refresh</string>
 </resources>

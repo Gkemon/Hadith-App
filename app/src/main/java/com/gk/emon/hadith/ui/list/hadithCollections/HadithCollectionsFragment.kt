@@ -6,14 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.gk.emon.core_features.base_framework_ui.BaseFragment
+import com.gk.emon.core_features.base_ui_containers.BaseFragment
 import com.gk.emon.core_features.extensions.*
-import com.gk.emon.core_features.functional.succeeded
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentCollectionsBinding
-import com.gk.emon.lovelyLoading.LoadingPopup
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

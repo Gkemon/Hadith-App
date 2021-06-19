@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.gk.emon.core_features.base_framework_ui.BaseFragment
+import com.gk.emon.core_features.base_ui_containers.BaseFragment
 import com.gk.emon.core_features.extensions.hideLoadingPopup
 import com.gk.emon.core_features.extensions.showLoadingPopup
 import com.gk.emon.hadith.databinding.FragmentDetailsBinding

@@ -1,4 +1,4 @@
-package com.gk.emon.core_features.base_framework_ui
+package com.gk.emon.core_features.base_ui_containers
 
 import android.view.View
 import androidx.annotation.ColorRes
@@ -10,7 +10,6 @@ import com.gk.emon.core_features.extensions.viewContainer
 import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment : Fragment() {
-
 
     open fun onBackPressed() {}
 
