@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="TitleTextViewStyle" parent="android:Widget.TextView">
-        <item name="android:foreground">?actionBarItemBackground</item>
+        <!--<item name="android:foreground">?actionBarItemBackground</item>-->
         <item name="android:alpha">1</item>
         <item name="android:shadowColor">@color/colorShadowText</item>
         <item name="android:shadowDx">0</item>
@@ -20,7 +20,9 @@
     </style>
 
     <style name="BaseCardStyle">
-        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>`
+<!--
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
+-->
         <item name="android:background">@drawable/shape_rectangle_all_side_curve_shadow</item>
         <item name="cardUseCompatPadding">true</item>
         <item name="android:layout_marginLeft">@dimen/_12sdp</item>

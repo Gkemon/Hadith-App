@@ -8,6 +8,10 @@
         android:name="com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment"
         android:label="@string/app_name">
         <action
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             android:id="@+id/action_collections_to_books"
             app:destination="@id/books_fragment_dest" />
         <argument
@@ -27,6 +31,10 @@
             app:argType="string"
             app:nullable="false" />
         <action
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             android:id="@+id/action_books_to_hadiths"
             app:destination="@id/fragment_hadith_list" />
     </fragment>
@@ -45,6 +53,10 @@
             android:name="title"
             app:argType="string" />
         <action
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
             android:id="@+id/action_hadith_list_to_detail"
             app:destination="@id/fragment_hadith_detail" />
     </fragment>
