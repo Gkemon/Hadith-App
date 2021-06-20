@@ -1,4 +1,6 @@
+/*
 include ':easy-loading'
+*/
 include ':core-features'
 include ':app'
 rootProject.name = "Learn-Hadith"

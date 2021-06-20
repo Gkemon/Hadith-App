@@ -3,7 +3,6 @@ package com.gk.emon.lovelyLoading
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -18,7 +17,6 @@ import androidx.annotation.IntRange
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
-
 
 class LoadingPopup(context: Context) : Dialog(context) {
     private var intentionalDelayInMillSec: Long = 0
@@ -114,10 +112,10 @@ class LoadingPopup(context: Context) : Dialog(context) {
     override fun hide() {
         if (intentionalDelayInMillSec != 0L) {
             Handler(Looper.getMainLooper()).postDelayed({
-                super.hide()
+                super.dismiss()
             }, intentionalDelayInMillSec)
         } else {
-            super.hide()
+            super.dismiss()
         }
 
     }
@@ -140,7 +138,7 @@ class LoadingPopup(context: Context) : Dialog(context) {
         CustomLayoutStep {
         private var isAutoCancelable = false
         private var intentionalDelayInMillSec: Long = 0
-        private var dialog: LoadingPopup?=null
+        var dialog: LoadingPopup? = null
 
         @Synchronized
         fun getDialog(context: Context): LoadingPopup? {
@@ -149,6 +147,7 @@ class LoadingPopup(context: Context) : Dialog(context) {
             }
             return dialog
         }
+
         @LayoutRes
         private var customLayoutID = 0
         private var opacity = DEFAULT_OPACITY
@@ -219,12 +218,15 @@ class LoadingPopup(context: Context) : Dialog(context) {
             if (activity != null && activity.application != null) {
                 activity.application
                     .registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
-                        override fun onActivityCreated(activity: Activity, bundle: Bundle?) {}
-                        override fun onActivityStarted(activity: Activity) {}
-                        override fun onActivityResumed(activity: Activity) {
+                        override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+                            dialog?.hide()
+                            dialog = null
                             dialog = getDialog(activity)
                             build()
                         }
+
+                        override fun onActivityStarted(activity: Activity) {}
+                        override fun onActivityResumed(activity: Activity) {}
 
                         override fun onActivityPaused(activity: Activity) {}
                         override fun onActivityStopped(activity: Activity) {}
@@ -240,7 +242,6 @@ class LoadingPopup(context: Context) : Dialog(context) {
         }
 
         init {
-            dialog = getDialog(activity)
             registerActivityChangeListener(activity)
         }
     }
@@ -271,14 +272,16 @@ class LoadingPopup(context: Context) : Dialog(context) {
         }
 
         @JvmStatic
-        fun showLoadingPopUp(activity: Activity) = try {
-            loadingBuilder.getDialog(activity)?.show()
+        fun showLoadingPopUp() = try {
+            loadingBuilder.dialog?.show()
         } catch (e: Exception) {
             Log.e(TAG, "Error in loading popup: " + e.message)
         }
 
         @JvmStatic
-        fun hideLoadingPopUp(activity: Activity) = loadingBuilder.getDialog(activity)?.hide()
+        fun hideLoadingPopUp() {
+            loadingBuilder.dialog?.hide()
+        }
 
         @JvmStatic
         @Synchronized

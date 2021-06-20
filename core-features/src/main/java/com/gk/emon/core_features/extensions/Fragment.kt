@@ -19,9 +19,9 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Fragmen
     beginTransaction().func().commit()
 
 fun showLoadingPopup(activity: FragmentActivity?){
-    activity?.let { it -> LoadingPopup.showLoadingPopUp(it) }
+    activity?.let { it -> LoadingPopup.showLoadingPopUp() }
 }
 
 fun hideLoadingPopup(activity: FragmentActivity?){
-    activity?.let { it -> LoadingPopup.hideLoadingPopUp(it) }
+    activity?.let { it -> LoadingPopup.hideLoadingPopUp() }
 }

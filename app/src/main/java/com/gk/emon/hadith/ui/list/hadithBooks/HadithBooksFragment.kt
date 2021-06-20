@@ -13,6 +13,7 @@ import com.gk.emon.core_features.extensions.*
 import com.gk.emon.hadith.R
 import com.gk.emon.hadith.databinding.FragmentBooksBinding
 import com.gk.emon.hadith.ui.list.hadithCollections.HadithCollectionsFragment
+import com.gk.emon.lovelyLoading.LoadingPopup
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,9 +59,9 @@ class HadithBooksFragment : BaseFragment() {
     private fun handleLoading(show: Boolean) {
         if (show) {
             viewDataBinding.tvEmpty.invisible()
-            showLoadingPopup(activity)
+            LoadingPopup.showLoadingPopUp()
         } else {
-            hideLoadingPopup(activity)
+            LoadingPopup.hideLoadingPopUp()
         }
     }
 

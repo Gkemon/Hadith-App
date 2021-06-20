@@ -11,6 +11,7 @@ import com.gk.emon.core_features.base_ui_containers.BaseFragment
 import com.gk.emon.core_features.extensions.hideLoadingPopup
 import com.gk.emon.core_features.extensions.showLoadingPopup
 import com.gk.emon.hadith.databinding.FragmentDetailsBinding
+import com.gk.emon.lovelyLoading.LoadingPopup
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,9 +47,9 @@ class HadithsDetailsFragment : BaseFragment() {
     private fun setupLoading() {
         viewModelHadithDetails.dataLoading.observe(this.viewLifecycleOwner, Observer {
             if (it) {
-                showLoadingPopup(activity)
+                LoadingPopup.showLoadingPopUp()
             } else {
-                hideLoadingPopup(activity)
+                LoadingPopup.hideLoadingPopUp()
             }
         })
     }
